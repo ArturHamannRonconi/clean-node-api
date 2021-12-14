@@ -1,3 +1,4 @@
+import MissingParamError from '../errors/MissingParamError'
 import badRequest from '../helpers/badRequest'
 
 class SignUpController {
@@ -7,7 +8,7 @@ class SignUpController {
     for (const field of fields) {
       if (!httpRequest.body[field])
         return badRequest(
-          new Error(`Missing param: ${field}`)
+          new MissingParamError(`Missing param: ${field}`)
         )
     }
   }
