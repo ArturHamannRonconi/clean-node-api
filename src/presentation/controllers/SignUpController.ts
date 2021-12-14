@@ -1,8 +1,14 @@
+import badRequest from '../helpers/badRequest'
+
 class SignUpController {
   handle (httpRequest: any): any {
-    return {
-      statusCode: 400,
-      body: new Error('Missing param: name')
+    const fields = ['name', 'email']
+
+    for (const field of fields) {
+      if (!httpRequest.body[field])
+        return badRequest(
+          new Error(`Missing param: ${field}`)
+        )
     }
   }
 }
