@@ -1,9 +1,9 @@
 import badRequest from '../helpers/badRequest'
 import Controller from '../protocols/Controller'
 import EmailValidator from '../protocols/EmailValidator'
-import { StatusCode } from '../protocols/HttpMessageError'
 import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
-import { InvalidParamError, MissingParamError, ServerError } from '../errors'
+import { InvalidParamError, MissingParamError } from '../errors'
+import serverError from '../helpers/serverError'
 
 class SignUpController implements Controller {
   constructor (
@@ -29,10 +29,7 @@ class SignUpController implements Controller {
         new InvalidParamError('email')
       )
     } catch (error) {
-      return {
-        statusCode: StatusCode.INTERNAL_SERVER,
-        body: new ServerError()
-      }
+      return serverError()
     }
   }
 }
