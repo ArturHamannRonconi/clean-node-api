@@ -123,6 +123,7 @@ describe('SignUp Controller', () => {
     expect(emailIsValidSpy)
       .toHaveBeenCalledWith(httpRequest.body.email)
   })
+
   it('Should return 500 if email validator throws is provided', () => {
     const { sut, emailValidator } = makeSUT()
     jest.spyOn(emailValidator, 'isValid')
@@ -140,5 +141,23 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
     expect(httpResponse).toHaveProperty('body', new ServerError())
+  })
+
+  it('Should return 400 if password and passwordConfirmation are different provided', () => {
+    const { sut, emailValidator } = makeSUT()
+    jest.spyOn(emailValidator, 'isValid').mockReturnValueOnce(false)
+
+    const httpRequest = {
+      body: {
+        email: 'any_email.com',
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'any_password_2'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
+    expect(httpResponse).toHaveProperty('body', new InvalidParamError('passwordConfirmation'))
   })
 })
