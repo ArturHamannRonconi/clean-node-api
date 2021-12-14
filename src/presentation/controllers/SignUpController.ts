@@ -1,8 +1,9 @@
 import { badRequest, serverError } from '../helpers'
-import { Controller, EmailValidator } from '../protocols'
+import { Controller, EmailValidator, Json } from '../protocols'
 import { InvalidParamError, MissingParamError } from '../errors'
 import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
 import { AddAccount } from '../../domain/useCases'
+import { success } from '../helpers/success'
 
 interface HttpRequestBody {
   name: string
@@ -40,7 +41,10 @@ class SignUpController implements Controller {
         new InvalidParamError('email')
       )
 
-      this.addAccount.add({ email, name, password })
+      const accountData = this.addAccount
+        .add({ email, name, password }) as unknown as Json
+
+      return success(accountData)
     } catch (error) {
       return serverError()
     }
