@@ -1,11 +1,32 @@
-import MissingParamError from '../errors/MissingParamError'
+import { InvalidParamError, MissingParamError } from '../errors'
+import EmailValidator from '../protocols/EmailValidator'
+import { StatusCode } from '../protocols/HttpMessageError'
 import SignUpController from './SignUpController'
 
-const makeSUT = (): SignUpController => new SignUpController()
+interface SutTypes {
+  emailValidator: EmailValidator
+  sut: SignUpController
+}
+
+const makeSUT = (): SutTypes => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      return true
+    }
+  }
+
+  const emailValidator = new EmailValidatorStub()
+  const sut = new SignUpController(emailValidator)
+
+  return {
+    emailValidator,
+    sut
+  }
+}
 
 describe('SignUp Controller', () => {
   it('Should return 400 if no name is provided', () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -15,12 +36,12 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
 
-    expect(httpResponse).toHaveProperty('statusCode', 400)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: name'))
   })
 
   it('Should return 400 if no email is provided', () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -30,12 +51,12 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
 
-    expect(httpResponse).toHaveProperty('statusCode', 400)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: email'))
   })
 
   it('Should return 400 if no password is provided', () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -45,12 +66,12 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
 
-    expect(httpResponse).toHaveProperty('statusCode', 400)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: password'))
   })
 
   it('Should return 400 if no passwordConfirmation is provided', () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -60,7 +81,25 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
 
-    expect(httpResponse).toHaveProperty('statusCode', 400)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: passwordConfirmation'))
+  })
+
+  it('Should return 400 if and invalid email is provided', () => {
+    const { sut, emailValidator } = makeSUT()
+    emailValidator.isValid = () => false
+
+    const httpRequest = {
+      body: {
+        email: 'any_email.com',
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
+    expect(httpResponse).toHaveProperty('body', new InvalidParamError('email'))
   })
 })
