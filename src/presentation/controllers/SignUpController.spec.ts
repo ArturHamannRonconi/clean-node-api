@@ -221,4 +221,25 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
     expect(httpResponse).toHaveProperty('body', new ServerError())
   })
+
+  it('Should return 200 if valid data is provided', () => {
+    const { sut } = makeSUT()
+
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        name: 'any_name',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.SUCCESS)
+    expect(httpResponse).toHaveProperty('body', {
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email@mail.com'
+    })
+  })
 })
