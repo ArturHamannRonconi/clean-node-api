@@ -26,5 +26,8 @@
     "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/server.ts",
     "test": "jest -i",
     "test:staged": "jest -i --passWithNoTests"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": ["yarn test:staged"]
   }
 }
