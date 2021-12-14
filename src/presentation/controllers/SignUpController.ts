@@ -10,7 +10,7 @@ class SignUpController implements Controller {
 
   handle (httpRequest: HttpRequest): HttpResponse {
     try {
-      const { email } = httpRequest.body
+      const { email, password, passwordConfirmation } = httpRequest.body
       const fields = ['name', 'email', 'password', 'passwordConfirmation']
 
       for (const field of fields) {
@@ -18,6 +18,9 @@ class SignUpController implements Controller {
           new MissingParamError(`Missing param: ${field}`)
         )
       }
+
+      if (password !== passwordConfirmation)
+        return badRequest(new InvalidParamError('passwordConfirmation'))
 
       const emailIsValid = this
         .emailValidator
