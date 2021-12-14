@@ -6,4 +6,4 @@ class MissingParamError extends Error {
   }
 }
 
-export default MissingParamError
+export { MissingParamError }

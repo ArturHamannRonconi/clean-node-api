@@ -1,10 +1,4 @@
-interface Json {
-  [field: string]:
-  string | string[] |
-  number | number[] |
-  boolean | boolean[] |
-  Json
-}
+import { Json } from './Json'
 
 interface HttpRequest {
   body?: Json
@@ -17,4 +11,4 @@ interface HttpResponse {
   headers?: Json
 }
 
-export { HttpRequest, HttpResponse, Json }
+export { HttpRequest, HttpResponse }

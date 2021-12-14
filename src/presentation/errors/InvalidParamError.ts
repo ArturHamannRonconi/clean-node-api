@@ -6,4 +6,4 @@ class InvalidParamError extends Error {
   }
 }
 
-export default InvalidParamError
+export { InvalidParamError }

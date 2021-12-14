@@ -1,9 +1,7 @@
-import badRequest from '../helpers/badRequest'
-import Controller from '../protocols/Controller'
-import EmailValidator from '../protocols/EmailValidator'
-import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
+import { badRequest, serverError } from '../helpers'
+import { Controller, EmailValidator } from '../protocols'
 import { InvalidParamError, MissingParamError } from '../errors'
-import serverError from '../helpers/serverError'
+import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
 
 class SignUpController implements Controller {
   constructor (
@@ -34,4 +32,4 @@ class SignUpController implements Controller {
   }
 }
 
-export default SignUpController
+export { SignUpController }
