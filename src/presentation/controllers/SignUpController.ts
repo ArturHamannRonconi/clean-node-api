@@ -18,7 +18,7 @@ class SignUpController implements Controller {
     private readonly emailValidator: EmailValidator
   ) { }
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { email, password, passwordConfirmation, name } =
         httpRequest.body as unknown as HttpRequestBody
@@ -41,7 +41,7 @@ class SignUpController implements Controller {
         new InvalidParamError('email')
       )
 
-      const accountData = this.addAccount
+      const accountData = await this.addAccount
         .add({ email, name, password }) as unknown as Json
 
       return success(accountData)
