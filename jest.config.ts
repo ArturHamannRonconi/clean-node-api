@@ -3,6 +3,7 @@ export default {
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/src/presentation/controllers/*Controller.ts',
+    '<rootDir>/src/presentation/utils/*.ts',
     '<rootDir>/src/domain/useCases/*UseCase.ts'
   ],
   preset: 'ts-jest',
