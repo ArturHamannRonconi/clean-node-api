@@ -24,8 +24,12 @@
   },
   "scripts": {
     "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/server.ts",
-    "test": "jest -i",
-    "test:staged": "jest -i --passWithNoTests"
+    "test": "jest -i --passWithNoTests --silent --noStackTrace",
+    "test:verbose": "jest -i --passWithNoTests",
+    "test:unit": "yarn test -c jest-unit.config.ts",
+    "test:integration": "yarn test -c jest-integration.config.ts",
+    "test:staged": "yarn test --findRelatedTests",
+    "test:ci": "yarn test --coverage"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": ["yarn test:staged"]

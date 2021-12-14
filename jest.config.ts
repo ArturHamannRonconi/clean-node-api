@@ -2,7 +2,8 @@ export default {
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
-    '<rootDir>/src/**/*.ts'
+    '<rootDir>/src/presentation/controllers/*Controller.ts',
+    '<rootDir>/src/domain/useCases/*UseCase.ts'
   ],
   preset: 'ts-jest',
   testMatch: ['**/*.spec.ts'],
