@@ -1,7 +1,7 @@
 import { ServerError } from '../errors'
-import { StatusCode, HttpMessageError } from '../protocols'
+import { StatusCode, HttpResponseMessage } from '../protocols'
 
-const serverError = (): HttpMessageError => ({
+const serverError = (): HttpResponseMessage => ({
   statusCode: StatusCode.INTERNAL_SERVER,
   body: new ServerError()
 })

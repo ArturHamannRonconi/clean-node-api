@@ -1,8 +1,8 @@
 import { StatusCode } from './StatusCode'
 
-interface HttpMessageError {
+interface HttpResponseMessage {
   statusCode: StatusCode
   body: any
 }
 
-export { HttpMessageError }
+export { HttpResponseMessage }
