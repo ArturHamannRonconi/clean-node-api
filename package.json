@@ -23,6 +23,8 @@
     "typescript": "*"
   },
   "scripts": {
-    "test": "jest"
+    "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/server.ts",
+    "test": "jest -i",
+    "test:staged": "jest -i"
   }
 }
