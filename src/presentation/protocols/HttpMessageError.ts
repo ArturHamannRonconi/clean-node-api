@@ -1,5 +1,6 @@
 enum StatusCode {
-  BAD_REQUEST=400
+  BAD_REQUEST=400,
+  INTERNAL_SERVER=500
 }
 
 interface HttpMessageError {

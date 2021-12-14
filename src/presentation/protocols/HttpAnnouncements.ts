@@ -13,7 +13,7 @@ interface HttpRequest {
 
 interface HttpResponse {
   statusCode?: number
-  body?: Json
+  body?: Json | Error
   headers?: Json
 }
 
