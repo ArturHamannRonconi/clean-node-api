@@ -11,6 +11,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/dotenv": "^8.2.0",
     "@types/eslint": "^8.2.1",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.11.12",
@@ -30,7 +31,7 @@
     "typescript": "*"
   },
   "scripts": {
-    "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/server.ts",
+    "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/main/server.ts",
     "test": "jest -i --passWithNoTests --silent --noStackTrace",
     "test:verbose": "jest -i --passWithNoTests",
     "test:unit": "yarn test -c jest-unit.config.ts",
@@ -46,6 +47,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "validator": "^13.7.0"
   }
 }
