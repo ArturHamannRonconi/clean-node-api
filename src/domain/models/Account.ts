@@ -1,9 +1,9 @@
 import { Guid } from '../../presentation/protocols'
 
-interface AccountModel {
+interface Account {
   id: Guid
   email: string
   name: string
 }
 
-export { AccountModel }
+export { Account }

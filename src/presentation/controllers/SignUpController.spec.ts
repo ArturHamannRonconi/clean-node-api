@@ -1,8 +1,8 @@
 import { SignUpController } from './SignUpController'
 import { EmailValidator, StatusCode } from '../protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
-import { AccountModel } from '../../domain/models'
-import { AddAccount, AddAccountModel } from '../../domain/useCases'
+import { Account } from '../../domain/models'
+import { AddAccount, AddAccountDTO } from '../../domain/useCases'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -15,7 +15,7 @@ const makeEmailValidator = (): EmailValidator => {
 }
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountDTO): Promise<Account> {
       return await new Promise(resolve => resolve({
         id: 'valid_id',
         name: 'valid_name',

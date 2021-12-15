@@ -1,2 +1,2 @@
 export * from './AddAccount'
-export * from './AddAccountModel'
+export * from './AddAccountDTO'

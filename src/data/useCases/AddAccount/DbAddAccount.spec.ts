@@ -1,3 +1,5 @@
+import { Account } from '../../../domain/models'
+import { AddAccount } from '../../../domain/useCases'
 import { Encrypter } from '../../protocols/Encrypter'
 import { DbAddAccount } from './DbAddAccount'
 
