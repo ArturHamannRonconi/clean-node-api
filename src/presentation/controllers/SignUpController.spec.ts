@@ -223,7 +223,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toHaveProperty('body', new ServerError())
   })
 
-  it('Should return 200 if valid data is provided', async () => {
+  it('Should return 201 if valid data is provided', async () => {
     const { sut } = makeSUT()
 
     const httpRequest = {
@@ -236,7 +236,7 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
 
-    expect(httpResponse).toHaveProperty('statusCode', StatusCode.SUCCESS)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.CREATED)
     expect(httpResponse).toHaveProperty('body', {
       id: 'valid_id',
       name: 'valid_name',

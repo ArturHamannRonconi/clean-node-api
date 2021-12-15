@@ -1,3 +1,4 @@
+import { Header } from './Header'
 import { Json } from './Json'
 
 interface HttpRequest {
@@ -8,7 +9,7 @@ interface HttpRequest {
 interface HttpResponse {
   statusCode?: number
   body?: Json | Error
-  headers?: Json
+  headers?: Header[]
 }
 
 export { HttpRequest, HttpResponse }

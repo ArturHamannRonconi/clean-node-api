@@ -1,7 +1,8 @@
 import { Router } from 'express'
+import { SignUpControllerExpressdapter } from '../../../infra/router/express/SignUpControllerExpressAdapter'
 
 const signUpRoutes = Router()
 
-signUpRoutes.post('/sign-up', (req, res) => res.status(201).json({ ok: 'ok' }))
+signUpRoutes.post('/sign-up', SignUpControllerExpressdapter.handle)
 
 export { signUpRoutes }

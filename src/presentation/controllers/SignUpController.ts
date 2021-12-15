@@ -1,9 +1,8 @@
-import { badRequest, serverError } from '../helpers'
+import { badRequest, serverError, created } from '../helpers'
 import { Controller, EmailValidator, Json } from '../protocols'
 import { InvalidParamError, MissingParamError } from '../errors'
 import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
 import { AddAccountUseCase } from '../../domain/useCases'
-import { success } from '../helpers/success'
 
 interface HttpRequestBody {
   name: string
@@ -44,7 +43,7 @@ class SignUpController implements Controller {
       const accountData = await this.addAccountUseCase
         .add({ email, name, password }) as unknown as Json
 
-      return success(accountData)
+      return created(accountData)
     } catch (error) {
       return serverError()
     }
