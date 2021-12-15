@@ -4,7 +4,7 @@ export default {
   collectCoverageFrom: [
     '<rootDir>/src/presentation/controllers/*Controller.ts',
     '<rootDir>/src/presentation/utils/*.ts',
-    '<rootDir>/src/domain/useCases/*UseCase.ts'
+    '<rootDir>/src/data/useCases/**/*UseCase.ts'
   ],
   preset: 'ts-jest',
   testMatch: ['**/*.spec.ts'],

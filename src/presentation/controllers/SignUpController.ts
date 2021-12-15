@@ -2,7 +2,7 @@ import { badRequest, serverError } from '../helpers'
 import { Controller, EmailValidator, Json } from '../protocols'
 import { InvalidParamError, MissingParamError } from '../errors'
 import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
-import { AddAccount } from '../../domain/useCases'
+import { AddAccountUseCase } from '../../domain/useCases'
 import { success } from '../helpers/success'
 
 interface HttpRequestBody {
@@ -14,7 +14,7 @@ interface HttpRequestBody {
 
 class SignUpController implements Controller {
   constructor (
-    private readonly addAccount: AddAccount,
+    private readonly addAccountUseCase: AddAccountUseCase,
     private readonly emailValidator: EmailValidator
   ) { }
 
@@ -41,7 +41,7 @@ class SignUpController implements Controller {
         new InvalidParamError('email')
       )
 
-      const accountData = await this.addAccount
+      const accountData = await this.addAccountUseCase
         .add({ email, name, password }) as unknown as Json
 
       return success(accountData)

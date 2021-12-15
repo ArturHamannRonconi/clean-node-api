@@ -1,2 +1,3 @@
-export * from './AddAccount'
-export * from './AddAccountDTO'
+export * from './AddAccountUseCase'
+export * from './AddAccountRequestDTO'
+export * from './AddAccountResponseDTO'

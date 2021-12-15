@@ -1,8 +1,8 @@
 import { Account } from '../../domain/models'
-import { AddAccountDTO } from '../../domain/useCases'
+import { AddAccountRequestDTO } from '../../domain/useCases'
 
 interface AddAccountRepository {
-  add: (addAccount: AddAccountDTO) => Promise<Account>
+  add: (addAccount: AddAccountRequestDTO) => Promise<Account>
 }
 
 export { AddAccountRepository }

@@ -1,16 +1,17 @@
 import { Account } from '../../../domain/models'
-import { AddAccountDTO } from '../../../domain/useCases'
+import { AddAccountRequestDTO, AddAccountUseCase } from '../../../domain/useCases'
 import { AddAccountRepository } from '../../protocols/AddAccountRepository'
 import { Encrypter } from '../../protocols/Encrypter'
-import { DbAddAccount } from './DbAddAccount'
+import { DbAddAccountUseCase } from './DbAddAccountUseCase'
 
 const makeAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (addAccount: AddAccountDTO): Promise<Account> {
+    async add (addAccount: AddAccountRequestDTO): Promise<Account> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
-        email: 'valid_email'
+        email: 'valid_email',
+        password: 'hashed_password'
       }
 
       return await new Promise(resolve => resolve(fakeAccount))
@@ -31,7 +32,7 @@ const makeEncrypter = (): Encrypter => {
 }
 
 interface SutTypes {
-  sut: DbAddAccount
+  sut: AddAccountUseCase
   encryptStub: Encrypter
   addAccountRepositoryStub: AddAccountRepository
 }
@@ -39,7 +40,7 @@ interface SutTypes {
 const makeSUT = (): SutTypes => {
   const addAccountRepositoryStub = makeAddAccountRepository()
   const encryptStub = makeEncrypter()
-  const sut = new DbAddAccount(
+  const sut = new DbAddAccountUseCase(
     encryptStub,
     addAccountRepositoryStub
   )
@@ -126,6 +127,5 @@ describe('DbAddAccount UseCase', () => {
 
     const account = await sut.add(accountData)
     expect(account).toHaveProperty('id')
-    expect(account).not.toHaveProperty('password')
   })
 })

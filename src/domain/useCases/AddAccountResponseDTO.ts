@@ -1,10 +1,9 @@
 import { Guid } from '../../presentation/protocols'
 
-interface Account {
+interface AddAccountResponseDTO {
   id: Guid
   email: string
   name: string
-  password: string
 }
 
-export { Account }
+export { AddAccountResponseDTO }

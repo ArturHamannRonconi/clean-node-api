@@ -1,8 +1,7 @@
 import { SignUpController } from './SignUpController'
 import { EmailValidator, StatusCode } from '../protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
-import { Account } from '../../domain/models'
-import { AddAccount, AddAccountDTO } from '../../domain/useCases'
+import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../domain/useCases'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -13,9 +12,9 @@ const makeEmailValidator = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
-const makeAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add (account: AddAccountDTO): Promise<Account> {
+const makeAddAccount = (): AddAccountUseCase => {
+  class AddAccountStubUseCase implements AddAccountUseCase {
+    async add (account: AddAccountRequestDTO): Promise<AddAccountResponseDTO> {
       return await new Promise(resolve => resolve({
         id: 'valid_id',
         name: 'valid_name',
@@ -24,13 +23,13 @@ const makeAddAccount = (): AddAccount => {
     }
   }
 
-  return new AddAccountStub()
+  return new AddAccountStubUseCase()
 }
 
 interface SutTypes {
   emailValidator: EmailValidator
   sut: SignUpController
-  addAccount: AddAccount
+  addAccount: AddAccountUseCase
 }
 
 const makeSUT = (): SutTypes => {
