@@ -9,6 +9,7 @@ export default {
   preset: 'ts-jest',
   testMatch: ['**/*.spec.ts'],
   coverageDirectory: 'coverage',
+  setupFiles: ['<rootDir>/jest.setup.ts'],
   coverageProvider: 'v8',
   roots: ['<rootDir>/src']
 }
