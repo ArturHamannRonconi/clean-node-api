@@ -1,7 +1,18 @@
 import request from 'supertest'
+
 import { app } from '../../app'
+import { MongoHelperConnection } from '../../../infra/db/mongodb/helpers/MongoHelperConnection'
+
+const { MONGO_URL } = process.env
 
 describe('Sign Up routes', () => {
+  beforeAll(async () => await MongoHelperConnection.connect(MONGO_URL))
+  afterAll(async () => await MongoHelperConnection.disconnect())
+  afterEach(async () => await MongoHelperConnection
+    .getCollection('accounts')
+    .deleteMany({})
+  )
+
   it('Should return an account on success', async () => {
     await request(app)
       .post('/api/v1/sign-up')

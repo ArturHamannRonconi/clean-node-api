@@ -3,9 +3,9 @@ import { Collection, MongoClient } from 'mongodb'
 class MongoHelperConnection {
   private static client: MongoClient
 
-  static async connect (): Promise<void> {
+  static async connect (url: string): Promise<void> {
     if (this.client !== null)
-      this.client = await MongoClient.connect(process.env.MONGO_URL)
+      this.client = await MongoClient.connect(url)
   }
 
   static async disconnect (): Promise<void> {
