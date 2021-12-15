@@ -6,7 +6,7 @@ export default {
     '<rootDir>/src/presentation/utils/*.ts',
     '<rootDir>/src/data/useCases/**/*UseCase.ts'
   ],
-  preset: 'ts-jest',
+  preset: '@shelf/jest-mongodb',
   testMatch: ['**/*.spec.ts'],
   coverageDirectory: 'coverage',
   setupFiles: ['<rootDir>/jest.setup.ts'],
