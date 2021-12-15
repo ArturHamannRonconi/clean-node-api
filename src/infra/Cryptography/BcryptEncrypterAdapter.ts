@@ -7,8 +7,7 @@ class BcryptEncryptAdapter implements Encrypter {
   ) { }
 
   async encrypt (value: string): Promise<string> {
-    await hash(value, this.salt)
-    return null
+    return await hash(value, this.salt)
   }
 }
 
