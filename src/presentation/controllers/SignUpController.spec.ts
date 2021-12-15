@@ -4,12 +4,6 @@ import { InvalidParamError, MissingParamError, ServerError } from '../errors'
 import { AccountModel } from '../../domain/models'
 import { AddAccount, AddAccountModel } from '../../domain/useCases'
 
-interface SutTypes {
-  emailValidator: EmailValidator
-  sut: SignUpController
-  addAccount: AddAccount
-}
-
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
@@ -31,6 +25,12 @@ const makeAddAccount = (): AddAccount => {
   }
 
   return new AddAccountStub()
+}
+
+interface SutTypes {
+  emailValidator: EmailValidator
+  sut: SignUpController
+  addAccount: AddAccount
 }
 
 const makeSUT = (): SutTypes => {
