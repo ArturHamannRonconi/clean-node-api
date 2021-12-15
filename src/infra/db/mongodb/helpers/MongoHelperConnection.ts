@@ -1,17 +1,21 @@
-import { MongoClient } from 'mongodb'
+import { Collection, MongoClient } from 'mongodb'
 
-const mongoHelperConnection = {
-  client: null as MongoClient,
+class MongoHelperConnection {
+  private static client: MongoClient
 
-  async connect (): Promise<void> {
+  static async connect (): Promise<void> {
     if (this.client !== null)
-      this.client = MongoClient.connect(process.env.MONGO_URL)
-  },
+      this.client = await MongoClient.connect(process.env.MONGO_URL)
+  }
 
-  async disconnect (): Promise<void> {
+  static async disconnect (): Promise<void> {
     if (this.client !== null)
-      this.client.close()
+      await this.client.close()
+  }
+
+  static getCollection (collectionName: string): Collection {
+    return this.client.db().collection(collectionName)
   }
 }
 
-export { mongoHelperConnection }
+export { MongoHelperConnection }
