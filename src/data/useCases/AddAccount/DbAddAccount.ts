@@ -13,11 +13,11 @@ class DbAddAccount implements AddAccount {
     const passwordHashed = await this
       .encrypter.encrypt(accountData.password)
 
-    await this.dbAddAccountRepository.add({
+    const account = await this.dbAddAccountRepository.add({
       ...accountData, password: passwordHashed
     })
 
-    return await new Promise(resolve => resolve(null))
+    return account
   }
 }
 
