@@ -1,7 +1,6 @@
 import { Account } from '../../../domain/models'
 import { AddAccountRequestDTO, AddAccountUseCase } from '../../../domain/useCases'
-import { AddAccountRepository } from '../../protocols/AddAccountRepository'
-import { Encrypter } from '../../protocols/Encrypter'
+import { Encrypter, AddAccountRepository } from '../../protocols'
 import { DbAddAccountUseCase } from './DbAddAccountUseCase'
 
 const makeAddAccountRepository = (): AddAccountRepository => {
