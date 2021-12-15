@@ -2,10 +2,12 @@ import { Encrypter } from '../../data/protocols'
 import { hash } from 'bcryptjs'
 
 class BcryptEncryptAdapter implements Encrypter {
-  async encrypt (value: string): Promise<string> {
-    const { SALT } = process.env
+  constructor (
+    private readonly salt: number
+  ) { }
 
-    await hash(value, Number(SALT))
+  async encrypt (value: string): Promise<string> {
+    await hash(value, this.salt)
     return null
   }
 }

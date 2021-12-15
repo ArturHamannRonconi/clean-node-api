@@ -4,7 +4,7 @@ import bcryptjs from 'bcryptjs'
 import { BcryptEncryptAdapter } from './BcryptEncrypterAdapter'
 
 const { SALT } = process.env
-const makeSUT = (): BcryptEncryptAdapter => new BcryptEncryptAdapter()
+const makeSUT = (): BcryptEncryptAdapter => new BcryptEncryptAdapter(Number(SALT))
 
 describe('Bcrypt Encrypter Adapter', () => {
   it('Should call bcrypt witth correct value', async () => {
