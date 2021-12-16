@@ -5,6 +5,7 @@ import { BcryptEncryptAdapter } from '../../infra/Cryptography/BcryptEncrypterAd
 import { EmailValidatorAdapter } from '../../presentation/utils/EmailValidatorAdapter'
 import { DbAddAccountUseCase } from '../../data/useCases/AddAccount/DbAddAccountUseCase'
 import { AccountMongoRepository } from '../../infra/db/mongodb/AccountRepository/AccountMongoRepository'
+import { join } from 'path'
 
 const signUpFactory = (): Controller => {
   const addAccount = new DbAddAccountUseCase(
@@ -14,12 +15,16 @@ const signUpFactory = (): Controller => {
 
   const emailValidator = new EmailValidatorAdapter()
 
+  const filePath = join(__dirname, '..', '..', '..', '..', 'log')
   const signUpController = new SignUpController(
     addAccount,
     emailValidator
   )
 
-  return new LoggerControllerDecorator(signUpController)
+  return new LoggerControllerDecorator(
+    signUpController,
+    filePath
+  )
 }
 
 export { signUpFactory }
