@@ -1,8 +1,8 @@
-import { badRequest, serverError, created } from '../helpers'
-import { Controller, EmailValidator, Json } from '../protocols'
-import { InvalidParamError, MissingParamError } from '../errors'
-import { HttpRequest, HttpResponse } from '../protocols/HttpAnnouncements'
-import { AddAccountUseCase } from '../../domain/useCases'
+import { badRequest, serverError, created } from '../../helpers'
+import { Controller, EmailValidator, Json } from '../../protocols'
+import { InvalidParamError, MissingParamError } from '../../errors'
+import { HttpRequest, HttpResponse } from '../../protocols/HttpAnnouncements'
+import { AddAccountUseCase } from '../../../domain/useCases'
 
 interface HttpRequestBody {
   name: string
