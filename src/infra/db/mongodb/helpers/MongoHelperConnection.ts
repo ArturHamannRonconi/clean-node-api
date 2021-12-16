@@ -9,12 +9,26 @@ class MongoHelperConnection {
   }
 
   static async disconnect (): Promise<void> {
-    if (this.client !== null)
+    if (this.client !== null) {
       await this.client.close()
+      this.client = null
+    }
   }
 
   static getCollection (collectionName: string): Collection {
-    return this.client.db().collection(collectionName)
+    let collection = this.client.db()
+      .collection(collectionName)
+
+    if (this.client === null)
+      this.client
+        .connect()
+        .then(con => {
+          collection = con.db()
+            .collection(collectionName)
+        })
+        .catch(console.error)
+
+    return collection
   }
 }
 
