@@ -1,16 +1,18 @@
-import { MissingParamError } from '../../errors'
 import { badRequest } from '../../helpers'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
+import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
 
 class SignInController implements Controller {
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const fields = ['email', 'password']
+  constructor (
+    private readonly RequiredFieldsValidator: RequiredFieldsValidator
+  ) { }
 
-    for (const field of fields) {
-      if (!httpRequest.body[field]) return badRequest(
-        new MissingParamError(field)
-      )
-    }
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+    const error = await this
+      .RequiredFieldsValidator
+      .validate(httpRequest)
+
+    if (error) return badRequest(error)
   }
 }
 

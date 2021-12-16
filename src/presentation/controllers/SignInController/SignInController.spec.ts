@@ -1,9 +1,14 @@
 import { SignInController } from '.'
 import { MissingParamError } from '../../errors'
 import { StatusCode } from '../../protocols'
+import { RequiredFieldsValidatorAdapter } from '../../utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
 
 const makeSUT = (): SignInController => {
-  return new SignInController()
+  return new SignInController(
+    new RequiredFieldsValidatorAdapter([
+      'email', 'password'
+    ])
+  )
 }
 
 describe('Sign In Controller', () => {
@@ -16,7 +21,6 @@ describe('Sign In Controller', () => {
     }
 
     const httpResponse = await sut.handle(httpRequest)
-
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('email'))
   })
@@ -30,7 +34,6 @@ describe('Sign In Controller', () => {
     }
 
     const httpResponse = await sut.handle(httpRequest)
-
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', new MissingParamError('password'))
   })

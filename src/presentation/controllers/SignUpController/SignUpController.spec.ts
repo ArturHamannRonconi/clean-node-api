@@ -2,6 +2,7 @@ import { SignUpController } from '.'
 import { EmailValidator, StatusCode } from '../../protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../domain/useCases'
+import { RequiredFieldsValidatorAdapter } from '../../utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -12,6 +13,7 @@ const makeEmailValidator = (): EmailValidator => {
 
   return new EmailValidatorStub()
 }
+
 const makeAddAccount = (): AddAccountUseCase => {
   class AddAccountStubUseCase implements AddAccountUseCase {
     async add (account: AddAccountRequestDTO): Promise<AddAccountResponseDTO> {
@@ -37,7 +39,11 @@ const makeSUT = (): SutTypes => {
   const emailValidator = makeEmailValidator()
   const sut = new SignUpController(
     addAccount,
-    emailValidator
+    emailValidator,
+    new RequiredFieldsValidatorAdapter([
+      'email', 'name', 'password',
+      'passwordConfirmation'
+    ])
   )
 
   return {
@@ -60,7 +66,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: name'))
+    expect(httpResponse).toHaveProperty('body', new MissingParamError('name'))
   })
 
   it('Should return 400 if no email is provided', async () => {
@@ -75,7 +81,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: email'))
+    expect(httpResponse).toHaveProperty('body', new MissingParamError('email'))
   })
 
   it('Should return 400 if no password is provided', async () => {
@@ -90,7 +96,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: password'))
+    expect(httpResponse).toHaveProperty('body', new MissingParamError('password'))
   })
 
   it('Should return 400 if no passwordConfirmation is provided', async () => {
@@ -105,7 +111,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('Missing param: passwordConfirmation'))
+    expect(httpResponse).toHaveProperty('body', new MissingParamError('passwordConfirmation'))
   })
 
   it('Should return 400 if and invalid email is provided', async () => {
