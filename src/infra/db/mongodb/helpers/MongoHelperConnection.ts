@@ -2,9 +2,11 @@ import { Collection, MongoClient } from 'mongodb'
 
 class MongoHelperConnection {
   private static client: MongoClient
+  private static url: string
 
   static async connect (url: string): Promise<void> {
-    if (this.client !== null)
+    this.url = url
+    if (!this.client)
       this.client = await MongoClient.connect(url)
   }
 
@@ -15,20 +17,10 @@ class MongoHelperConnection {
     }
   }
 
-  static getCollection (collectionName: string): Collection {
-    let collection = this.client.db()
+  static async getCollection (collectionName: string): Promise<Collection> {
+    await this.connect(this.url)
+    return this.client.db()
       .collection(collectionName)
-
-    if (this.client === null)
-      this.client
-        .connect()
-        .then(con => {
-          collection = con.db()
-            .collection(collectionName)
-        })
-        .catch(console.error)
-
-    return collection
   }
 }
 

@@ -6,8 +6,8 @@ const { MONGO_URL } = process.env
 describe('Account Mongo Repository', () => {
   beforeAll(async () => await MongoHelperConnection.connect(MONGO_URL))
   afterAll(async () => await MongoHelperConnection.disconnect())
-  afterEach(async () => await MongoHelperConnection
-    .getCollection('accounts')
+  afterEach(async () => await (await MongoHelperConnection
+    .getCollection('accounts'))
     .deleteMany({})
   )
 

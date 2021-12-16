@@ -5,7 +5,7 @@ import { MongoHelperConnection } from '../helpers/MongoHelperConnection'
 
 class AccountMongoRepository implements AddAccountRepository {
   async add (addAccount: AddAccountRequestDTO): Promise<Account> {
-    const accountCollection = MongoHelperConnection
+    const accountCollection = await MongoHelperConnection
       .getCollection('accounts')
 
     const { insertedId } = await accountCollection.insertOne(addAccount)
