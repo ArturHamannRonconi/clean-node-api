@@ -1,5 +1,4 @@
-import { Account } from '../../../domain/models'
-import { AddAccountRequestDTO, AddAccountUseCase } from '../../../domain/useCases'
+import { AddAccountRequestDTO, AddAccountResponseDTO, AddAccountUseCase } from '../../../domain/useCases'
 import { Encrypter, AddAccountRepository } from '../../protocols'
 
 class DbAddAccountUseCase implements AddAccountUseCase {
@@ -8,11 +7,11 @@ class DbAddAccountUseCase implements AddAccountUseCase {
     private readonly dbAddAccountRepository: AddAccountRepository
   ) { }
 
-  async add (accountData: AddAccountRequestDTO): Promise<Account> {
+  async add (accountData: AddAccountRequestDTO): Promise<AddAccountResponseDTO> {
     const passwordHashed = await this
       .encrypter.encrypt(accountData.password)
 
-    const account = await this.dbAddAccountRepository.add({
+    const { password, ...account } = await this.dbAddAccountRepository.add({
       ...accountData, password: passwordHashed
     })
 
