@@ -4,7 +4,12 @@ import { LoggerControllerDecorator } from './LoggerControllerDecorator'
 const makeGenericController = (): Controller => {
   class GenericController implements Controller {
     async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      return await new Promise(resolve => resolve(null))
+      const httpResponse = {
+        body: { ok: 'ok' },
+        statusCode: 200
+      }
+
+      return await new Promise(resolve => resolve(httpResponse))
     }
   }
 
@@ -37,5 +42,19 @@ describe('Logger Controller Decorator', () => {
 
     await sut.handle(httpRequest)
     expect(handleSpy).toHaveBeenCalledWith(httpRequest)
+  })
+
+  it('Should call controller', async () => {
+    const { sut } = makeSUT()
+
+    const httpRequest = {
+      body: { ok: 'ok' }
+    }
+
+    const result = await sut.handle(httpRequest)
+    expect(result).toEqual({
+      body: { ok: 'ok' },
+      statusCode: 200
+    })
   })
 })
