@@ -1,4 +1,5 @@
 enum StatusCode {
+  UNAUTORIZED=401,
   CONFLICT=409,
   CREATED=201,
   SUCCESS=200,
