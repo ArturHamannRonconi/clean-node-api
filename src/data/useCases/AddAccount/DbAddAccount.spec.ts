@@ -1,5 +1,5 @@
 import { Account } from '../../../domain/models'
-import { AddAccountRequestDTO, AddAccountUseCase } from '../../../domain/useCases'
+import { AddAccountRequestDTO, AddAccountUseCase } from '../../../domain/useCases/AddAccountUseCase'
 import { Encrypter, AddAccountRepository } from '../../protocols'
 import { DbAddAccountUseCase } from './DbAddAccountUseCase'
 

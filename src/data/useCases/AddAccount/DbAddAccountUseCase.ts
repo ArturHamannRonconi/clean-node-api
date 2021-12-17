@@ -1,4 +1,4 @@
-import { AddAccountRequestDTO, AddAccountResponseDTO, AddAccountUseCase } from '../../../domain/useCases'
+import { AddAccountRequestDTO, AddAccountResponseDTO, AddAccountUseCase } from '../../../domain/useCases/AddAccountUseCase'
 import { Encrypter, AddAccountRepository } from '../../protocols'
 
 class DbAddAccountUseCase implements AddAccountUseCase {
