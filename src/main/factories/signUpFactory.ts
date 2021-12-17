@@ -9,6 +9,7 @@ import { EmailValidatorAdapter } from '../../presentation/utils/EmailValidatorAd
 import { LoggerControllerDecorator } from '../decorators/LoggerControllerDecorator/LoggerControllerDecorator'
 import { RequiredFieldsValidatorAdapter } from '../../presentation/utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
 import { DbVerifyAccountExists } from '../../data/useCases/VerifyAccountExists/DbVerifyAccountExists'
+import { FileSystemLoggerRepository } from '../../infra/fileSystem/LoggerRepository/FileSystemLoggerRepository'
 
 const signUpFactory = (): Controller => {
   const accountRepository = new AccountMongoRepository()
@@ -24,7 +25,9 @@ const signUpFactory = (): Controller => {
     ['email', 'name', 'password', 'passwordConfirmation']
   )
   const emailValidator = new EmailValidatorAdapter()
+
   const filePath = join(__dirname, '..', '..', '..', '..', 'log')
+  const loggerRepository = new FileSystemLoggerRepository(filePath)
 
   const signUpController = new SignUpController(
     addAccount,
@@ -35,7 +38,7 @@ const signUpFactory = (): Controller => {
 
   return new LoggerControllerDecorator(
     signUpController,
-    filePath
+    loggerRepository
   )
 }
 
