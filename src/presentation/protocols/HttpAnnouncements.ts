@@ -1,8 +1,8 @@
 import { Header } from './Header'
 import { Json } from './Json'
 
-interface HttpRequest {
-  body?: Json
+interface HttpRequest<T> {
+  body?: T
   headers?: Json
 }
 

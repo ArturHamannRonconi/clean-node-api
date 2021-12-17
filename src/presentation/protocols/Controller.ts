@@ -1,7 +1,7 @@
 import { HttpRequest, HttpResponse } from './HttpAnnouncements'
 
-interface Controller {
-  handle: (httpRequest: HttpRequest) => Promise<HttpResponse>
+interface Controller<T> {
+  handle: (httpRequest: HttpRequest<T>) => Promise<HttpResponse>
 }
 
 export { Controller }

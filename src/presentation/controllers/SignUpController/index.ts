@@ -5,15 +5,9 @@ import { HttpRequest, HttpResponse } from '../../protocols/HttpAnnouncements'
 import { AddAccountUseCase } from '../../../domain/useCases/AddAccountUseCase'
 import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
 import { VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+import { SignUpHttpRequestBody } from './SignUpHttpRequestBody'
 
-interface HttpRequestBody {
-  name: string
-  email: string
-  password: string
-  passwordConfirmation: string
-}
-
-class SignUpController implements Controller {
+class SignUpController implements Controller<SignUpHttpRequestBody> {
   constructor (
     private readonly addAccountUseCase: AddAccountUseCase,
     private readonly emailValidator: EmailValidator,
@@ -21,10 +15,9 @@ class SignUpController implements Controller {
     private readonly verifyAccountExistsUseCase: VerifyAccountExistsUseCase
   ) { }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest<SignUpHttpRequestBody>): Promise<HttpResponse> {
     try {
-      const { email, password, passwordConfirmation, name } =
-        httpRequest.body as unknown as HttpRequestBody
+      const { email, password, passwordConfirmation, name } = httpRequest.body
 
       const absenceFields = await this
         .requiredFieldsValidator

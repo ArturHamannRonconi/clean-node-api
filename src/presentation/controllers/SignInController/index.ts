@@ -1,22 +1,16 @@
 import { badRequest } from '../../helpers'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
+import { SignInHttpRequestBody } from './SignInHttpRequestBody'
 
-interface HttpRequestBody {
-  readonly email: string
-  readonly password: string
-}
-
-class SignInController implements Controller {
+class SignInController implements Controller<SignInHttpRequestBody> {
   constructor (
-    private readonly RequiredFieldsValidator: RequiredFieldsValidator
+    private readonly requiredFieldsValidator: RequiredFieldsValidator
   ) { }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    httpRequest.body as unknown as HttpRequestBody
-
+  async handle (httpRequest: HttpRequest<SignInHttpRequestBody>): Promise<HttpResponse> {
     const absenceFields = await this
-      .RequiredFieldsValidator
+      .requiredFieldsValidator
       .validate(httpRequest)
 
     if (absenceFields)

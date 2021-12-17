@@ -13,7 +13,9 @@ const makeSUT = (): SutTypes => {
   const requiredFieldsValidator = new RequiredFieldsValidatorAdapter([
     'email', 'password'
   ])
-  const sut = new SignInController(requiredFieldsValidator)
+  const sut = new SignInController(
+    requiredFieldsValidator
+  )
 
   return {
     sut,
@@ -26,7 +28,8 @@ describe('Sign In Controller', () => {
     const { sut } = makeSUT()
     const httpRequest = {
       body: {
-        password: 'any_password'
+        password: 'any_password',
+        email: undefined
       }
     }
 
@@ -39,7 +42,8 @@ describe('Sign In Controller', () => {
     const { sut } = makeSUT()
     const httpRequest = {
       body: {
-        email: 'any_email'
+        email: 'any_email',
+        password: undefined
       }
     }
 
