@@ -1,8 +1,19 @@
 import { SignUpController } from '.'
 import { EmailValidator, StatusCode } from '../../protocols'
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
-import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../domain/useCases'
+import { AccountAlreadyExistsError, InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../domain/useCases/AddAccountUseCase'
 import { RequiredFieldsValidatorAdapter } from '../../utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
+import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+
+const makeVerifyAccountExistsUseCase = (): VerifyAccountExistsUseCase => {
+  class VerifyAccountExistsStub implements VerifyAccountExistsUseCase {
+    async verify (account: VerifyAccountExistsRequestDTO): Promise<boolean> {
+      return await new Promise(resolve => resolve(false))
+    }
+  }
+
+  return new VerifyAccountExistsStub()
+}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -32,24 +43,29 @@ interface SutTypes {
   emailValidator: EmailValidator
   sut: SignUpController
   addAccount: AddAccountUseCase
+  verifyAccountExists: VerifyAccountExistsUseCase
 }
 
 const makeSUT = (): SutTypes => {
   const addAccount = makeAddAccount()
   const emailValidator = makeEmailValidator()
+  const verifyAccountExists = makeVerifyAccountExistsUseCase()
+
   const sut = new SignUpController(
     addAccount,
     emailValidator,
     new RequiredFieldsValidatorAdapter([
       'email', 'name', 'password',
       'passwordConfirmation'
-    ])
+    ]),
+    verifyAccountExists
   )
 
   return {
     emailValidator,
     sut,
-    addAccount
+    addAccount,
+    verifyAccountExists
   }
 }
 
@@ -248,5 +264,23 @@ describe('SignUp Controller', () => {
       name: 'valid_name',
       email: 'valid_email@mail.com'
     })
+  })
+
+  it('Should be able to return 409 if account already exists', async () => {
+    const { sut, verifyAccountExists } = makeSUT()
+    jest.spyOn(verifyAccountExists, 'verify')
+      .mockReturnValueOnce(new Promise(resolve => resolve(true)))
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'email_already_exists',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.CONFLICT)
+    expect(httpResponse).toHaveProperty('body', new AccountAlreadyExistsError())
   })
 })

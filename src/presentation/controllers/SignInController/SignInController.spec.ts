@@ -1,19 +1,29 @@
 import { SignInController } from '.'
-import { MissingParamError } from '../../errors'
 import { StatusCode } from '../../protocols'
+import { MissingParamError } from '../../errors'
+import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
 import { RequiredFieldsValidatorAdapter } from '../../utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
 
-const makeSUT = (): SignInController => {
-  return new SignInController(
-    new RequiredFieldsValidatorAdapter([
-      'email', 'password'
-    ])
-  )
+interface SutTypes {
+  sut: SignInController
+  requiredFieldsValidator: RequiredFieldsValidator
+}
+
+const makeSUT = (): SutTypes => {
+  const requiredFieldsValidator = new RequiredFieldsValidatorAdapter([
+    'email', 'password'
+  ])
+  const sut = new SignInController(requiredFieldsValidator)
+
+  return {
+    sut,
+    requiredFieldsValidator
+  }
 }
 
 describe('Sign In Controller', () => {
   it('Should be able to return 400 if email doesn\'t sended', async () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         password: 'any_password'
@@ -26,7 +36,7 @@ describe('Sign In Controller', () => {
   })
 
   it('Should be able to return 400 if password doesn\'t sended', async () => {
-    const sut = makeSUT()
+    const { sut } = makeSUT()
     const httpRequest = {
       body: {
         email: 'any_email'
