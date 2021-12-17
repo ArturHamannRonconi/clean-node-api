@@ -1,9 +1,9 @@
 import { join } from 'path'
-import { existsSync } from 'fs'
 import { rm } from 'fs/promises'
 
 import { Controller, HttpRequest, HttpResponse } from '../../../presentation/protocols'
 import { LoggerControllerDecorator } from './LoggerControllerDecorator'
+import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
 
 const makeGenericController = (): Controller => {
   class GenericController implements Controller {
@@ -21,22 +21,35 @@ const makeGenericController = (): Controller => {
   return new GenericController()
 }
 
+const makeGenericLoggerRepository = (): LoggerRepository => {
+  class GenericLoggerRepository implements LoggerRepository {
+    async log (description: string): Promise<void> {
+      return await new Promise(resolve => resolve(null))
+    }
+  }
+
+  return new GenericLoggerRepository()
+}
+
 interface SutTypes {
   sut: LoggerControllerDecorator
   controller: Controller
+  loggerRepository: LoggerRepository
 }
 
 const makeSUT = (filePath: string): SutTypes => {
   const controller = makeGenericController()
+  const loggerRepository = makeGenericLoggerRepository()
 
   const sut = new LoggerControllerDecorator(
     controller,
-    filePath
+    loggerRepository
   )
 
   return {
     sut,
-    controller
+    controller,
+    loggerRepository
   }
 }
 
@@ -58,7 +71,7 @@ describe('Logger Controller Decorator', () => {
     expect(handleSpy).toHaveBeenCalledWith(httpRequest)
   })
 
-  it('Should call controller', async () => {
+  it('Should return httpResponse if controller return httpResponse', async () => {
     const { sut } = makeSUT(filePath)
 
     const httpRequest = {
@@ -73,8 +86,10 @@ describe('Logger Controller Decorator', () => {
     })
   })
 
-  it('Should be able to record request and response data in Log files', async () => {
-    const { sut } = makeSUT(filePath)
+  it('Should be able call a log function on logRepository', async () => {
+    const { sut, loggerRepository } = makeSUT(filePath)
+    const logSpy = jest.spyOn(loggerRepository, 'log')
+
     const httpRequest = {
       body: {
         name: 'user',
@@ -85,6 +100,6 @@ describe('Logger Controller Decorator', () => {
     }
 
     await sut.handle(httpRequest)
-    expect(existsSync(filePath)).toBeTruthy()
+    expect(logSpy).toHaveBeenCalledWith('NEW LOG')
   })
 })
