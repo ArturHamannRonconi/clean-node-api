@@ -54,7 +54,14 @@ describe('Db Authentication Use Case', () => {
       .toHaveBeenCalledWith(login.email)
   })
 
-  it('', async () => {
+  it('Should throw if FindAccountRepository throws', async () => {
+    const { sut, findAccountRepository } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(findAccountRepository, 'byEmail')
+      .mockImplementation(() => { throw new Error() })
 
+    const error = sut.auth(login)
+    await expect(error).rejects.toThrow()
   })
 })
