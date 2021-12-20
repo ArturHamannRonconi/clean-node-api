@@ -1,4 +1,4 @@
-import { StatusCode, HttpResponseMessage } from '../protocols'
+import { StatusCode, HttpResponseMessage } from '../../protocols/http'
 
 const badRequest = (err: Error): HttpResponseMessage => ({
   statusCode: StatusCode.BAD_REQUEST,

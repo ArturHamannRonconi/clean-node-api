@@ -1,4 +1,4 @@
-import { StatusCode } from './StatusCode'
+import { StatusCode } from '.'
 
 interface HttpResponseMessage {
   statusCode: StatusCode

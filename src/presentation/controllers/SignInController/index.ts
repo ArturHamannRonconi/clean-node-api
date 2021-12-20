@@ -1,8 +1,9 @@
-import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { badRequest, serverError, success, unautorized } from '../../helpers'
-import { Controller, HttpRequest, HttpResponse } from '../../protocols'
-import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
+import { Controller } from '../../protocols/Controller'
 import { SignInHttpRequestBody } from './SignInHttpRequestBody'
+import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
+import { RequiredFieldsValidator } from '../../protocols/validators'
+import { HttpRequest, HttpResponse } from '../../protocols/http'
+import { badRequest, serverError, success, unautorized } from '../../utils/http'
 
 class SignInController implements Controller<SignInHttpRequestBody> {
   constructor (
@@ -16,7 +17,7 @@ class SignInController implements Controller<SignInHttpRequestBody> {
 
       const absenceFields = await this
         .requiredFieldsValidator
-        .validate(httpRequest)
+        .validate({ ...httpRequest.body })
 
       if (absenceFields)
         return badRequest(absenceFields)

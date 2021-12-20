@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { appMiddlewares } from './middlewares'
+import { appMiddlewares } from '../infra/middlewares'
 import { routes } from './routes'
 
 const app = express()

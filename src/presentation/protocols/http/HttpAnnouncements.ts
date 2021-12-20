@@ -1,5 +1,4 @@
-import { Header } from './Header'
-import { Json } from './Json'
+import { Header, Json } from '.'
 
 interface HttpRequest<T> {
   body?: T

@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { app } from '../../app'
+import { app } from '../../../main/app'
 
 const route = '/test_body_parser'
 

@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { rm } from 'fs/promises'
 
-import { Controller, HttpRequest, HttpResponse } from '../../../presentation/protocols'
+import { Controller, HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
 import { LoggerControllerDecorator } from './LoggerControllerDecorator'
 import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
 

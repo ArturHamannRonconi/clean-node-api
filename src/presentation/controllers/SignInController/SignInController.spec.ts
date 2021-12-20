@@ -1,10 +1,10 @@
 import { SignInController } from '.'
-import { StatusCode } from '../../protocols'
-import { MissingParamError, ServerError } from '../../errors'
-import { RequiredFieldsValidator } from '../../protocols/RequiredFieldsValidator'
-import { RequiredFieldsValidatorAdapter } from '../../utils/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
+import { StatusCode } from '../../protocols/http'
+import { MissingParamError, ServerError } from '../../utils/errors'
+import { RequiredFieldsValidator } from '../../protocols/validators'
+import { RequiredFieldsValidatorAdapter } from '../../../infra/validators/RequiredFieldsValidatorAdapter/RequiredFieldsValidatorAdapter'
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { UnautorizedError } from '../../errors/UnautorizedError'
+import { UnautorizedError } from '../../utils/errors/UnautorizedError'
 
 const makeAuthentication = (): AuthenticationUseCase => {
   class AuthenticationStub implements AuthenticationUseCase {

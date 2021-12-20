@@ -1,4 +1,4 @@
-import { HttpResponseMessage, Json, StatusCode } from '../protocols'
+import { HttpResponseMessage, Json, StatusCode } from '../../protocols/http'
 
 const success = (data: Json): HttpResponseMessage => ({
   statusCode: StatusCode.SUCCESS,
