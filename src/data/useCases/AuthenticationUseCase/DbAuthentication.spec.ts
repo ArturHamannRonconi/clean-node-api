@@ -1,9 +1,9 @@
 import { Account } from '../../../domain/models'
 import { Guid } from '../../../domain/protocols/Guid'
-import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { Encrypter, FindAccountRepository, Authenticate } from '../../protocols'
 import { Tokens } from '../../protocols/Authenticate/Tokens'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
+import { Encrypter, FindAccountRepository, Authenticate, UpdateTokenRepository } from '../../protocols'
+import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 
 const makeFakeLogin = (): AuthenticationRequestDTO => ({
   email: 'any_email@mail.com',
@@ -55,29 +55,43 @@ const makeAuthenticate = (): Authenticate => {
   return new AuthenticateStub()
 }
 
+const makeUpdateAccessTokenRepository = (): UpdateTokenRepository => {
+  class UpdateTokenRepositoryStub implements UpdateTokenRepository {
+    async byId (id: Guid, token: string): Promise<void> {
+
+    }
+  }
+
+  return new UpdateTokenRepositoryStub()
+}
+
 interface SutTypes {
   sut: AuthenticationUseCase
   findAccountRepository: FindAccountRepository
   encrypter: Encrypter
   authenticate: Authenticate
+  updateTokenRepository: UpdateTokenRepository
 }
 
 const makeSUT = (): SutTypes => {
   const findAccountRepository = makeFindAccountRepository()
   const encrypter = makeEncrypter()
   const authenticate = makeAuthenticate()
+  const updateTokenRepository = makeUpdateAccessTokenRepository()
 
   const sut = new DbAuthenticationUseCase(
     findAccountRepository,
     encrypter,
-    authenticate
+    authenticate,
+    updateTokenRepository
   )
 
   return {
     sut,
     findAccountRepository,
     encrypter,
-    authenticate
+    authenticate,
+    updateTokenRepository
   }
 }
 
@@ -185,6 +199,20 @@ describe('Db Authentication Use Case', () => {
 
     const tokens = await sut.auth(login)
     expect(tokens).toBeNull()
+  })
+
+  it('Should call UpdateAccessTokenRepository with correct value', async () => {
+    const { sut, updateTokenRepository } = makeSUT()
+    const account = makeFakeAccount()
+    const updateAccessTokenRepositorySpy = jest
+      .spyOn(updateTokenRepository, 'byId')
+
+    await sut.auth(makeFakeLogin())
+    expect(updateAccessTokenRepositorySpy)
+      .toHaveBeenCalledWith(
+        account.id,
+        makeFakeToken().accessToken
+      )
   })
 
   it('Should be able to return the tokens if everything works out', async () => {
