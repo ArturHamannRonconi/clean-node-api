@@ -1,8 +1,8 @@
 import { Account } from '../../../domain/models'
 import { Guid } from '../../../domain/protocols/Guid'
 import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { Encrypter, FindAccountRepository } from '../../protocols'
-import { Authenticate } from '../../protocols/Authenticate'
+import { Encrypter, FindAccountRepository, Authenticate } from '../../protocols'
+import { Tokens } from '../../protocols/Authenticate/Tokens'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
 
 const makeFakeLogin = (): AuthenticationRequestDTO => ({
@@ -15,6 +15,10 @@ const makeFakeAccount = (): Account => ({
   id: 'any_id',
   password: 'any_hash',
   email: makeFakeLogin().email
+})
+
+const makeFakeToken = (): Tokens => ({
+  accessToken: 'any_token'
 })
 
 const makeFindAccountRepository = (): FindAccountRepository => {
@@ -43,8 +47,8 @@ const makeEncrypter = (): Encrypter => {
 
 const makeAuthenticate = (): Authenticate => {
   class AuthenticateStub implements Authenticate {
-    async auth (id: Guid): Promise<string> {
-      return 'any_token'
+    async auth (id: Guid): Promise<Tokens> {
+      return makeFakeToken()
     }
   }
 
@@ -181,5 +185,16 @@ describe('Db Authentication Use Case', () => {
 
     const tokens = await sut.auth(login)
     expect(tokens).toBeNull()
+  })
+
+  it('Should be able to return the tokens if everything works out', async () => {
+    const { sut } = makeSUT()
+    const login = makeFakeLogin()
+    const tokens = await sut.auth(login)
+
+    expect(tokens).toHaveProperty(
+      'accessToken',
+      makeFakeToken().accessToken
+    )
   })
 })
