@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { signUpFactory } from '../../../main/factories/signUpFactory'
+import { signUpFactory } from '../../../main/factories/SignUpFactory'
 
 class SignUpControllerExpressdapter {
   static async handle (request: Request, response: Response): Promise<Response> {
