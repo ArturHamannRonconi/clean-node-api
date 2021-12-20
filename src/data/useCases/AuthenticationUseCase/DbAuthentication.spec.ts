@@ -1,6 +1,6 @@
 import { Account } from '../../../domain/models'
 import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { FindAccountRepository } from '../../protocols'
+import { Encrypter, FindAccountRepository } from '../../protocols'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
 
 const makeFakeLogin = (): AuthenticationRequestDTO => ({
@@ -11,7 +11,7 @@ const makeFakeLogin = (): AuthenticationRequestDTO => ({
 const makeFakeAccount = (): Account => ({
   name: 'any_name',
   id: 'any_id',
-  password: 'any_password',
+  password: 'any_hash',
   email: makeFakeLogin().email
 })
 
@@ -25,20 +25,39 @@ const makeFindAccountRepository = (): FindAccountRepository => {
   return new FindAccountRepositoryStub()
 }
 
+const makeEncrypter = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (value: string): Promise<string> {
+      return 'any_hash'
+    }
+
+    async compare (value: string, hash: string): Promise<boolean> {
+      return true
+    }
+  }
+
+  return new EncrypterStub()
+}
+
 interface SutTypes {
   sut: AuthenticationUseCase
   findAccountRepository: FindAccountRepository
+  encrypter: Encrypter
 }
 
 const makeSUT = (): SutTypes => {
   const findAccountRepository = makeFindAccountRepository()
+  const encrypter = makeEncrypter()
+
   const sut = new DbAuthenticationUseCase(
-    findAccountRepository
+    findAccountRepository,
+    encrypter
   )
 
   return {
     sut,
-    findAccountRepository
+    findAccountRepository,
+    encrypter
   }
 }
 
@@ -76,5 +95,18 @@ describe('Db Authentication Use Case', () => {
 
     const tokens = await sut.auth(login)
     expect(tokens).toBeNull()
+  })
+
+  it('Should call compare in Encrypter with correct value', async () => {
+    const { sut, encrypter } = makeSUT()
+    const compareSpy = jest.spyOn(encrypter, 'compare')
+    const login = makeFakeLogin()
+    const account = makeFakeAccount()
+
+    await sut.auth(login)
+    expect(compareSpy).toHaveBeenCalledWith(
+      login.password,
+      account.password
+    )
   })
 })
