@@ -158,4 +158,15 @@ describe('Db Authentication Use Case', () => {
     expect(authSpy)
       .toHaveBeenCalledWith(makeFakeAccount().id)
   })
+
+  it('Should throw if Authenticate throws', async () => {
+    const { sut, authenticate } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(authenticate, 'auth')
+      .mockImplementation(() => { throw new Error() })
+
+    const error = sut.auth(login)
+    await expect(error).rejects.toThrow()
+  })
 })
