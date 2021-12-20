@@ -1,13 +1,13 @@
 import { Controller } from '../../protocols/Controller'
+import { Validation } from '../../protocols/validators'
 import { SignInHttpRequestBody } from './SignInHttpRequestBody'
-import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { RequiredFieldsValidator } from '../../protocols/validators'
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { badRequest, serverError, success, unautorized } from '../../utils/http'
+import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 
 class SignInController implements Controller<SignInHttpRequestBody> {
   constructor (
-    private readonly requiredFieldsValidator: RequiredFieldsValidator,
+    private readonly validation: Validation,
     private readonly authenticationUseCase: AuthenticationUseCase
   ) { }
 
@@ -15,19 +15,14 @@ class SignInController implements Controller<SignInHttpRequestBody> {
     try {
       const { email, password } = httpRequest.body
 
-      const absenceFields = await this
-        .requiredFieldsValidator
+      const error = await this.validation
         .validate({ ...httpRequest.body })
-
-      if (absenceFields)
-        return badRequest(absenceFields)
+      if (error) return badRequest(error)
 
       const token = await this
         .authenticationUseCase
         .auth({ email, password })
-
-      if (!token)
-        return unautorized()
+      if (!token) return unautorized()
 
       return success({ ...token })
     } catch (error) {

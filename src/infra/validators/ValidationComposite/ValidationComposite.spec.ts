@@ -43,6 +43,6 @@ describe('Validation Composite', () => {
   it('Should be able to return null if an validation are return null', async () => {
     const { sut } = makeSUT()
     const nullable = await sut.validate({ })
-    expect(nullable).toEqual(null)
+    expect(nullable).toBeNull()
   })
 })
