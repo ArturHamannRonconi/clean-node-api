@@ -1,10 +1,12 @@
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 import { Encrypter, FindAccountRepository } from '../../protocols'
+import { Authenticate } from '../../protocols/Authenticate'
 
 class DbAuthenticationUseCase implements AuthenticationUseCase {
   constructor (
     private readonly findAccountRepository: FindAccountRepository,
-    private readonly encrypter: Encrypter
+    private readonly encrypter: Encrypter,
+    private readonly authenticate: Authenticate
   ) { }
 
   async auth ({ email, password }: AuthenticationRequestDTO): Promise<AuthenticationResponseDTO> {
@@ -14,8 +16,9 @@ class DbAuthenticationUseCase implements AuthenticationUseCase {
 
     const correctPassword = await this.encrypter
       .compare(password, account.password)
-
     if (!correctPassword) return null
+
+    await this.authenticate.auth(account.id)
   }
 }
 
