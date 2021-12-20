@@ -1,13 +1,18 @@
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { FindAccountRepository } from '../../protocols'
+import { Encrypter, FindAccountRepository } from '../../protocols'
 
 class DbAuthenticationUseCase implements AuthenticationUseCase {
   constructor (
-    private readonly findAccountRepository: FindAccountRepository
+    private readonly findAccountRepository: FindAccountRepository,
+    private readonly encrypter: Encrypter
   ) { }
 
   async auth ({ email, password }: AuthenticationRequestDTO): Promise<AuthenticationResponseDTO> {
-    await this.findAccountRepository.byEmail(email)
+    const account = await this.findAccountRepository.byEmail(email)
+
+    if (!account) return null
+
+    await this.encrypter.compare(password, account.password)
     return null
   }
 }
