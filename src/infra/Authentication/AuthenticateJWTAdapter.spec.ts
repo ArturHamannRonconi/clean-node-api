@@ -39,4 +39,20 @@ describe('Authenticate JWT Adapter', () => {
       { subject: id, expiresIn }
     )
   })
+
+  it('Should return a token on sign success', async () => {
+    const { sut } = makeSUT()
+    const id = 'any_id'
+    const tokens = await sut.auth(id)
+
+    expect(tokens).toHaveProperty('accessToken', 'any_token')
+  })
+  
+  it('Should return a token on sign success', async () => {
+    const { sut } = makeSUT()
+    const id = 'any_id'
+    const tokens = await sut.auth(id)
+
+    expect(tokens).toHaveProperty('accessToken', 'any_token')
+  })
 })
