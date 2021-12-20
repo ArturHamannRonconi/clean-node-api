@@ -18,7 +18,8 @@ class DbAuthenticationUseCase implements AuthenticationUseCase {
       .compare(password, account.password)
     if (!correctPassword) return null
 
-    await this.authenticate.auth(account.id)
+    const tokens = await this.authenticate.auth(account.id)
+    if (!tokens) return null
   }
 }
 
