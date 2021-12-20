@@ -1,4 +1,5 @@
 export * from './InvalidParamError'
 export * from './MissingParamError'
 export * from './ServerError'
+export * from './CompareError'
 export * from './AccountAlreadyExistsError'
