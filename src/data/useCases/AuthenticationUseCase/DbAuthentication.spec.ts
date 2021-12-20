@@ -1,6 +1,8 @@
 import { Account } from '../../../domain/models'
+import { Guid } from '../../../domain/protocols/Guid'
 import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 import { Encrypter, FindAccountRepository } from '../../protocols'
+import { Authenticate } from '../../protocols/Authenticate'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
 
 const makeFakeLogin = (): AuthenticationRequestDTO => ({
@@ -39,25 +41,39 @@ const makeEncrypter = (): Encrypter => {
   return new EncrypterStub()
 }
 
+const makeAuthenticate = (): Authenticate => {
+  class AuthenticateStub implements Authenticate {
+    async auth (id: Guid): Promise<string> {
+      return 'any_token'
+    }
+  }
+
+  return new AuthenticateStub()
+}
+
 interface SutTypes {
   sut: AuthenticationUseCase
   findAccountRepository: FindAccountRepository
   encrypter: Encrypter
+  authenticate: Authenticate
 }
 
 const makeSUT = (): SutTypes => {
   const findAccountRepository = makeFindAccountRepository()
   const encrypter = makeEncrypter()
+  const authenticate = makeAuthenticate()
 
   const sut = new DbAuthenticationUseCase(
     findAccountRepository,
-    encrypter
+    encrypter,
+    authenticate
   )
 
   return {
     sut,
     findAccountRepository,
-    encrypter
+    encrypter,
+    authenticate
   }
 }
 
@@ -132,5 +148,14 @@ describe('Db Authentication Use Case', () => {
 
     const tokens = await sut.auth(login)
     expect(tokens).toBeNull()
+  })
+
+  it('Should call Authenticate with correct values', async () => {
+    const { sut, authenticate } = makeSUT()
+    const authSpy = jest.spyOn(authenticate, 'auth')
+
+    await sut.auth(makeFakeLogin())
+    expect(authSpy)
+      .toHaveBeenCalledWith(makeFakeAccount().id)
   })
 })
