@@ -109,4 +109,15 @@ describe('Db Authentication Use Case', () => {
       account.password
     )
   })
+
+  it('Should throw if Encrypter throws', async () => {
+    const { sut, encrypter } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(encrypter, 'compare')
+      .mockImplementation(() => { throw new Error() })
+
+    const error = sut.auth(login)
+    await expect(error).rejects.toThrow()
+  })
 })
