@@ -47,12 +47,15 @@ describe('Authenticate JWT Adapter', () => {
 
     expect(tokens).toHaveProperty('accessToken', 'any_token')
   })
-  
-  it('Should return a token on sign success', async () => {
-    const { sut } = makeSUT()
-    const id = 'any_id'
-    const tokens = await sut.auth(id)
 
-    expect(tokens).toHaveProperty('accessToken', 'any_token')
+  it('Should throws if sign throws', async () => {
+    const { sut } = makeSUT()
+    jest.spyOn(jwt, 'sign')
+      .mockImplementationOnce(() => { throw new Error() })
+
+    const id = 'any_id'
+    const error = sut.auth(id)
+
+    await expect(error).rejects.toThrow()
   })
 })
