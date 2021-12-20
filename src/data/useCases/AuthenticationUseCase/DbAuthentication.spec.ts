@@ -64,4 +64,17 @@ describe('Db Authentication Use Case', () => {
     const error = sut.auth(login)
     await expect(error).rejects.toThrow()
   })
+
+  it('Should return null if FindAccountRepository retur null', async () => {
+    const { sut, findAccountRepository } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(findAccountRepository, 'byEmail')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(null))
+      )
+
+    const tokens = await sut.auth(login)
+    expect(tokens).toBeNull()
+  })
 })
