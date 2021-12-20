@@ -1,17 +1,24 @@
 import { Account } from '../../../domain/models'
-import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
+import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 import { FindAccountRepository } from '../../protocols'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
+
+const makeFakeLogin = (): AuthenticationRequestDTO => ({
+  email: 'any_email@mail.com',
+  password: 'any_password'
+})
+
+const makeFakeAccount = (): Account => ({
+  name: 'any_name',
+  id: 'any_id',
+  password: 'any_password',
+  email: makeFakeLogin().email
+})
 
 const makeFindAccountRepository = (): FindAccountRepository => {
   class FindAccountRepositoryStub implements FindAccountRepository {
     async byEmail (email: string): Promise<Account> {
-      return await new Promise(resolve => resolve({
-        name: 'any_name',
-        id: 'any_id',
-        password: 'any_password',
-        email
-      }))
+      return await new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
 
@@ -38,16 +45,11 @@ const makeSUT = (): SutTypes => {
 describe('Db Authentication Use Case', () => {
   it('Should call FindAccountRepository with correct value', async () => {
     const { sut, findAccountRepository } = makeSUT()
+    const login = makeFakeLogin()
     const findAccountRepoSpy = jest
       .spyOn(findAccountRepository, 'byEmail')
 
-    const login = {
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    }
-
     await sut.auth(login)
-
     expect(findAccountRepoSpy)
       .toHaveBeenCalledWith(login.email)
   })
