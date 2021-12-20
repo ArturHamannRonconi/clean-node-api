@@ -1,11 +1,13 @@
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 import { Encrypter, FindAccountRepository, Authenticate } from '../../protocols'
+import { UpdateTokenRepository } from '../../protocols/TokenRepository/UpdateTokenRepository'
 
 class DbAuthenticationUseCase implements AuthenticationUseCase {
   constructor (
     private readonly findAccountRepository: FindAccountRepository,
     private readonly encrypter: Encrypter,
-    private readonly authenticate: Authenticate
+    private readonly authenticate: Authenticate,
+    private readonly updateTokenRepository: UpdateTokenRepository
   ) { }
 
   async auth ({ email, password }: AuthenticationRequestDTO): Promise<AuthenticationResponseDTO> {
@@ -19,6 +21,9 @@ class DbAuthenticationUseCase implements AuthenticationUseCase {
 
     const tokens = await this.authenticate.auth(account.id)
     if (!tokens) return null
+
+    await this.updateTokenRepository
+      .byId(account.id, tokens.accessToken)
 
     return tokens
   }
