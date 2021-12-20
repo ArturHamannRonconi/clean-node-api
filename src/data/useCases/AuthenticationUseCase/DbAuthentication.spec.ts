@@ -120,4 +120,17 @@ describe('Db Authentication Use Case', () => {
     const error = sut.auth(login)
     await expect(error).rejects.toThrow()
   })
+
+  it('Should return null if Encrypter retur null', async () => {
+    const { sut, encrypter } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(encrypter, 'compare')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(null))
+      )
+
+    const tokens = await sut.auth(login)
+    expect(tokens).toBeNull()
+  })
 })
