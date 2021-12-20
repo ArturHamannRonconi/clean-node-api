@@ -9,12 +9,9 @@ class EmailValidatorAdapter implements EmailValidator {
   }
 
   isValid (email: string): Error {
-    const emailIsValid = validator.isEmail(email)
-
-    if (!emailIsValid)
-      return new InvalidParamError('email')
-    else
-      return null
+    return validator.isEmail(email)
+      ? null
+      : new InvalidParamError('email')
   }
 }
 
