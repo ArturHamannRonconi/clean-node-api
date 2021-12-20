@@ -1,6 +1,5 @@
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
-import { Encrypter, FindAccountRepository } from '../../protocols'
-import { Authenticate } from '../../protocols/Authenticate'
+import { Encrypter, FindAccountRepository, Authenticate } from '../../protocols'
 
 class DbAuthenticationUseCase implements AuthenticationUseCase {
   constructor (
@@ -20,6 +19,8 @@ class DbAuthenticationUseCase implements AuthenticationUseCase {
 
     const tokens = await this.authenticate.auth(account.id)
     if (!tokens) return null
+
+    return tokens
   }
 }
 
