@@ -215,6 +215,17 @@ describe('Db Authentication Use Case', () => {
       )
   })
 
+  it('Should throw if UpdateAccessTokenRepository throws', async () => {
+    const { sut, updateTokenRepository } = makeSUT()
+    const login = makeFakeLogin()
+    jest
+      .spyOn(updateTokenRepository, 'byId')
+      .mockImplementation(() => { throw new Error() })
+
+    const error = sut.auth(login)
+    await expect(error).rejects.toThrow()
+  })
+
   it('Should be able to return the tokens if everything works out', async () => {
     const { sut } = makeSUT()
     const login = makeFakeLogin()
