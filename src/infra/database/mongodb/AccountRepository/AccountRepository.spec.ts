@@ -1,7 +1,15 @@
+import { AddAccountRequestDTO } from '../../../../domain/useCases/AddAccountUseCase'
 import { MongoHelperConnection } from '../helpers/MongoHelperConnection'
 import { AccountMongoRepository } from './AccountMongoRepository'
 
 const { MONGO_URL } = process.env
+
+const makeSUT = (): AccountMongoRepository => new AccountMongoRepository()
+const makeFakeAccount = (): AddAccountRequestDTO => ({
+  name: 'any_name',
+  email: 'any_email@mail.com',
+  password: 'any_password'
+})
 
 describe('Account Mongo Repository', () => {
   beforeAll(async () => await MongoHelperConnection.connect(MONGO_URL))
@@ -12,12 +20,8 @@ describe('Account Mongo Repository', () => {
   )
 
   it('Should return an account on success', async () => {
-    const sut = new AccountMongoRepository()
-    const account = await sut.add({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password'
-    })
+    const sut = makeSUT()
+    const account = await sut.add(makeFakeAccount())
 
     expect(account).toHaveProperty('id')
   })
