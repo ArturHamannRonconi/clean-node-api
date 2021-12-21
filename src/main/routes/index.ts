@@ -1,9 +1,9 @@
 import { Router } from 'express'
 
-import { signUpRoutes } from './signUpRoutes/signUp.routes'
+import { loginRoutes } from './loginRoutes/login.routes'
 
 const routes = Router()
 
-routes.use(signUpRoutes)
+routes.use('/login', loginRoutes)
 
 export { routes }
