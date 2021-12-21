@@ -1,13 +1,14 @@
+import { Controller } from '../../../presentation/protocols'
 import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
-import { Controller, HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
+import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
 
-class LoggerControllerDecorator implements Controller {
+class LoggerControllerDecorator<T> implements Controller<T> {
   constructor (
-    private readonly controller: Controller,
+    private readonly controller: Controller<T>,
     private readonly loggerRepository: LoggerRepository
   ) { }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest<T>): Promise<HttpResponse> {
     const httpResponse = await this.controller.handle(httpRequest)
 
     if (httpResponse.message)
