@@ -35,7 +35,7 @@
     "typescript": "*"
   },
   "scripts": {
-    "start": "node dist/main/server.ts",
+    "start": "node dist/main/server.js",
     "build": "yarn clean && tsc && yarn copy",
     "copy": "cp package.json dist/package.json && cp yarn.lock dist/yarn.lock",
     "clean": "rm -fr dist/",
