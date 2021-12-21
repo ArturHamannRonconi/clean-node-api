@@ -41,7 +41,7 @@ const signUpFactory = (): Controller<SignUpHttpRequestBody> => {
     validationComposite
   )
 
-  return new LoggerControllerDecorator(
+  return new LoggerControllerDecorator<SignUpHttpRequestBody>(
     signUpController,
     loggerRepository
   )

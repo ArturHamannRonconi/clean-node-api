@@ -40,7 +40,7 @@ const signInFacotry = (): Controller<SignInHttpRequestBody> => {
   const fileName = join(__dirname, '..', '..', '..', '..', 'log')
   const loggerRepository = new FileSystemLoggerRepository(fileName)
 
-  return new LoggerControllerDecorator(
+  return new LoggerControllerDecorator<SignInHttpRequestBody>(
     signInController,
     loggerRepository
   )
