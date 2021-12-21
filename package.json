@@ -35,6 +35,8 @@
     "typescript": "*"
   },
   "scripts": {
+    "start": "node dist/main/server.ts",
+    "build": "tsc",
     "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/main/server.ts",
     "test": "jest -i --passWithNoTests --silent --noStackTrace",
     "test:verbose": "jest -i --passWithNoTests",

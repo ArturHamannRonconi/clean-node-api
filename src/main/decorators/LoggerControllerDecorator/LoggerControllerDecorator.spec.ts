@@ -1,13 +1,14 @@
 import { join } from 'path'
 import { rm } from 'fs/promises'
 
-import { Controller, HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
+import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
 import { LoggerControllerDecorator } from './LoggerControllerDecorator'
 import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
+import { Controller } from '../../../presentation/protocols'
 
-const makeGenericController = (): Controller => {
-  class GenericController implements Controller {
-    async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+const makeGenericController = (): Controller<any> => {
+  class GenericController implements Controller<any> {
+    async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
       const httpResponse = {
         body: { ok: 'ok' },
         statusCode: 200,
@@ -32,8 +33,8 @@ const makeGenericLoggerRepository = (): LoggerRepository => {
 }
 
 interface SutTypes {
-  sut: LoggerControllerDecorator
-  controller: Controller
+  sut: LoggerControllerDecorator<any>
+  controller: Controller<any>
   loggerRepository: LoggerRepository
 }
 

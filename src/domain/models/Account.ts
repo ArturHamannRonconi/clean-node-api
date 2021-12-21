@@ -1,4 +1,4 @@
-import { Guid } from '../../presentation/protocols/http'
+import { Guid } from '../protocols/Guid'
 
 interface Account {
   id: Guid
