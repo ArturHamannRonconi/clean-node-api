@@ -5,11 +5,13 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": [
     "**/*.spec.ts",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "node_modules"
   ]
 }
