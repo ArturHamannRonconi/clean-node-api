@@ -1,5 +1,5 @@
 import { Validation } from '../../../protocols/validators'
-import { HttpRequest, Json } from '../../../protocols/http'
+import { HttpRequest, Json, StatusCode } from '../../../protocols/http'
 import { AddSurveyController } from '.'
 import { AddSurveyHttpRequestBody } from './AddSurveyHttpRequestBody'
 
@@ -45,5 +45,26 @@ describe('Add Survery Controller', () => {
     await sut.handle(httpRequest)
 
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  it('Should returns 400 if returns an error', async () => {
+    const { sut, validation } = makeSUT()
+    const response = new Error()
+
+    jest
+      .spyOn(validation, 'validate')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(response))
+      )
+    const httpRequest = {
+      body: {
+        question: 'any_question',
+        answers: undefined
+      }
+    }
+
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
+    expect(httpResponse).toHaveProperty('body', response)
   })
 })
