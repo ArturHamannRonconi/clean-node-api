@@ -1,9 +1,9 @@
 import { SignUpController } from '.'
-import { StatusCode } from '../../protocols/http'
-import { EmailValidator, Validation } from '../../protocols/validators'
-import { AccountAlreadyExistsError, MissingParamError, ServerError } from '../../utils/errors'
-import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../domain/useCases/AddAccountUseCase'
-import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+import { StatusCode } from '../../../protocols/http'
+import { EmailValidator, Validation } from '../../../protocols/validators'
+import { AccountAlreadyExistsError, MissingParamError, ServerError } from '../../../utils/errors'
+import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../../domain/useCases/AddAccountUseCase'
+import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
 
 const makeVerifyAccountExistsUseCase = (): VerifyAccountExistsUseCase => {
   class VerifyAccountExistsStub implements VerifyAccountExistsUseCase {

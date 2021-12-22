@@ -1,14 +1,14 @@
-import { AccountAlreadyExistsError } from '../../utils/errors'
-import { badRequest, serverError, created, conflict } from '../../utils/http'
+import { AccountAlreadyExistsError } from '../../../utils/errors'
+import { badRequest, serverError, created, conflict } from '../../../utils/http'
 
-import { AddAccountUseCase } from '../../../domain/useCases/AddAccountUseCase'
-import { VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+import { AddAccountUseCase } from '../../../../domain/useCases/AddAccountUseCase'
+import { VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
 
 import { SignUpHttpRequestBody } from './SignUpHttpRequestBody'
-import { Controller } from '../../protocols/Controller'
+import { Controller } from '../../../protocols/Controller'
 
-import { Validation } from '../../protocols/validators'
-import { HttpRequest, HttpResponse } from '../../protocols/http'
+import { Validation } from '../../../protocols/validators'
+import { HttpRequest, HttpResponse } from '../../../protocols/http'
 
 class SignUpController implements Controller<SignUpHttpRequestBody> {
   constructor (

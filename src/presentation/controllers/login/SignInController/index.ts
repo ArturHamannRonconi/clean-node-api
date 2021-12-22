@@ -1,9 +1,9 @@
-import { Controller } from '../../protocols/Controller'
-import { Validation } from '../../protocols/validators'
+import { Controller } from '../../../protocols/Controller'
+import { Validation } from '../../../protocols/validators'
 import { SignInHttpRequestBody } from './SignInHttpRequestBody'
-import { HttpRequest, HttpResponse } from '../../protocols/http'
-import { badRequest, serverError, success, unautorized } from '../../utils/http'
-import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
+import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { badRequest, serverError, success, unautorized } from '../../../utils/http'
+import { AuthenticationUseCase } from '../../../../domain/useCases/AuthenticationUseCase'
 
 class SignInController implements Controller<SignInHttpRequestBody> {
   constructor (
