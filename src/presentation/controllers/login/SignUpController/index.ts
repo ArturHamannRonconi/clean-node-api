@@ -22,7 +22,7 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
       const { email, password, name } = httpRequest.body
 
       const error = await this.validation
-        .validate({ ...httpRequest.body })
+        .validate(httpRequest.body)
       if (error) return badRequest(error)
 
       const accountAlreadyExists = await this
@@ -35,7 +35,7 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
       const accountData = await this.addAccountUseCase
         .add({ email, name, password })
 
-      return created({ ...accountData })
+      return created(accountData)
     } catch (error) {
       return serverError(error.message)
     }

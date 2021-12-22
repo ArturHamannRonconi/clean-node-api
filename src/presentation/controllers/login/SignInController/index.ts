@@ -16,7 +16,7 @@ class SignInController implements Controller<SignInHttpRequestBody> {
       const { email, password } = httpRequest.body
 
       const error = await this.validation
-        .validate({ ...httpRequest.body })
+        .validate(httpRequest.body)
       if (error) return badRequest(error)
 
       const token = await this
@@ -24,7 +24,7 @@ class SignInController implements Controller<SignInHttpRequestBody> {
         .auth({ email, password })
       if (!token) return unautorized()
 
-      return success({ ...token })
+      return success(token)
     } catch (error) {
       return serverError(error)
     }

@@ -3,7 +3,7 @@ interface Json {
   string | string[] |
   number | number[] |
   boolean | boolean[] |
-  Json
+  Json | any
 }
 
 export { Json }
