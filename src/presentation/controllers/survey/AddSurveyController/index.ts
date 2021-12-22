@@ -1,6 +1,7 @@
 import { Controller } from '../../../protocols'
 import { HttpRequest, HttpResponse } from '../../../protocols/http'
 import { Validation } from '../../../protocols/validators'
+import { badRequest } from '../../../utils/http'
 import { AddSurveyHttpRequestBody } from './AddSurveyHttpRequestBody'
 
 class AddSurveyController implements Controller<AddSurveyHttpRequestBody> {
@@ -9,7 +10,10 @@ class AddSurveyController implements Controller<AddSurveyHttpRequestBody> {
   ) {}
 
   async handle (httpRequest: HttpRequest<AddSurveyHttpRequestBody>): Promise<HttpResponse> {
-    await this.validation.validate(httpRequest.body)
+    const error = await this
+      .validation.validate(httpRequest.body)
+    if (error) return badRequest(error)
+
     return null
   }
 }
