@@ -1,5 +1,5 @@
 import { Controller } from '../../../presentation/protocols'
-import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
+import { LoggerRepository } from '../../../data/protocols/repositories/LoggerRepository'
 import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
 
 class LoggerControllerDecorator<T> implements Controller<T> {

@@ -1,6 +1,6 @@
 import { CompareValidator } from '../../../presentation/protocols/validators/CompareValidator'
 import { CompareError } from '../../../presentation/utils/errors'
-import { CompareValidatorAdapter } from './CompareValidatorAdapter'
+import { CompareValidatorAdapter } from '.'
 
 const makeSUT = (): CompareValidator => new CompareValidatorAdapter()
 

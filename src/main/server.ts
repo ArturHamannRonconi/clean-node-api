@@ -1,6 +1,6 @@
 import '../config/enviroment'
 import { app } from './app'
-import { MongoHelperConnection } from '../infra/database/mongodb/helpers/MongoHelperConnection'
+import { MongoHelperConnection } from '../infra/repositories/database/mongodb/helpers/MongoHelperConnection'
 
 const { PORT, MONGODB_URL } = process.env
 

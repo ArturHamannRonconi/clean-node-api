@@ -10,3 +10,18 @@ services:
       MONGO_INITDB_ROOT_PASSWORD:
     ports:
       - 27017:27017
+  node:
+    container_name: api
+    build: .
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+      - 9229:9229
+    volumes:
+      - ./dist/:/usr/app/dist
+    environment:
+      SALT: ${SALT}
+      PORT: ${PORT}
+      MONGODB_URL: ${MONGODB_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES: ${JWT_EXPIRES}

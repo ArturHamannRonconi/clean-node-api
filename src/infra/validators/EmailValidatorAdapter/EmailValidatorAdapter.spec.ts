@@ -1,7 +1,7 @@
 import validator from 'validator'
 import { InvalidParamError } from '../../../presentation/utils/errors'
 
-import { EmailValidatorAdapter } from './EmailValidatorAdapter'
+import { EmailValidatorAdapter } from '.'
 
 jest.mock('validator', () => ({
   isEmail: (): boolean => {

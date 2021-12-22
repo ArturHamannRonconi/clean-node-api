@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { ExpressAdapter } from './ExpressAdapter'
-import { signUpFactory } from '../../../main/factories/SignUpFactory'
+import { signUpFactory } from '../../../main/factories/controllers/SignUpControllerFactory'
 import { SignUpHttpRequestBody } from '../../../presentation/controllers/SignUpController/SignUpHttpRequestBody'
 
 class SignUpControllerExpressdapter {

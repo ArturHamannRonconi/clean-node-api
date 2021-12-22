@@ -1,6 +1,6 @@
 import { Json } from '../../../presentation/protocols/http'
 import { Validation } from '../../../presentation/protocols/validators'
-import { ValidationComposite } from './ValidationComposite'
+import { ValidationComposite } from '.'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {

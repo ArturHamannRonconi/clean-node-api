@@ -1,12 +1,12 @@
 import { AuthenticationRequestDTO, AuthenticationResponseDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
 import { Encrypter, FindAccountRepository, Authenticate } from '../../protocols'
-import { UpdateTokenRepository } from '../../protocols/TokenRepository/UpdateTokenRepository'
+import { UpdateTokenRepository } from '../../protocols/repositories/TokenRepository/UpdateTokenRepository'
 
 class DbAuthenticationUseCase implements AuthenticationUseCase {
   constructor (
     private readonly findAccountRepository: FindAccountRepository,
     private readonly encrypter: Encrypter,
-    private readonly authenticate: Authenticate,
+    private readonly authenticateWithAccessToken: Authenticate,
     private readonly updateTokenRepository: UpdateTokenRepository
   ) { }
 
@@ -19,13 +19,13 @@ class DbAuthenticationUseCase implements AuthenticationUseCase {
       .compare(password, account.password)
     if (!correctPassword) return null
 
-    const tokens = await this.authenticate.auth(account.id)
-    if (!tokens) return null
+    const accessToken = await this.authenticateWithAccessToken.auth(account.id)
+    if (!accessToken) return null
 
     await this.updateTokenRepository
-      .byId(account.id, tokens.accessToken)
+      .byId(account.id, accessToken)
 
-    return tokens
+    return { accessToken }
   }
 }
 

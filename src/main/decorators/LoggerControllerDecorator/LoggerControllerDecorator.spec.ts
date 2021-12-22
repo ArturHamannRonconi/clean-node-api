@@ -3,7 +3,7 @@ import { rm } from 'fs/promises'
 
 import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
 import { LoggerControllerDecorator } from './LoggerControllerDecorator'
-import { LoggerRepository } from '../../../data/protocols/LoggerRepository'
+import { LoggerRepository } from '../../../data/protocols/repositories/LoggerRepository'
 import { Controller } from '../../../presentation/protocols'
 
 const makeGenericController = (): Controller<any> => {

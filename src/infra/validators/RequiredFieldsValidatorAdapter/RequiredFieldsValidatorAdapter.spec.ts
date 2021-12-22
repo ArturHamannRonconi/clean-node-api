@@ -1,5 +1,5 @@
 import { MissingParamError } from '../../../presentation/utils/errors'
-import { RequiredFieldsValidatorAdapter } from './RequiredFieldsValidatorAdapter'
+import { RequiredFieldsValidatorAdapter } from '.'
 
 interface SutTypes {
   sut: RequiredFieldsValidatorAdapter

@@ -1,7 +1,7 @@
 import request from 'supertest'
 
 import { app } from '../../app'
-import { MongoHelperConnection } from '../../../infra/database/mongodb/helpers/MongoHelperConnection'
+import { MongoHelperConnection } from '../../../infra/repositories/database/mongodb/helpers/MongoHelperConnection'
 import { SignUpHttpRequestBody } from '../../../presentation/controllers/SignUpController/SignUpHttpRequestBody'
 
 const { MONGO_URL } = process.env

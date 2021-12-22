@@ -35,6 +35,7 @@
     "typescript": "*"
   },
   "scripts": {
+    "debug": "node --inspect=0.0.0.0:9229 --nolazy dist/main/server.js",
     "start": "node dist/main/server.js",
     "build": "yarn clean && tsc && yarn copy",
     "copy": "cp package.json dist/package.json && cp yarn.lock dist/yarn.lock",

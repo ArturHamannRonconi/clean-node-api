@@ -1,6 +1,5 @@
 import { Account } from '../../../domain/models'
 import { Guid } from '../../../domain/protocols/Guid'
-import { Tokens } from '../../protocols/Authenticate/Tokens'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
 import { Encrypter, FindAccountRepository, Authenticate, UpdateTokenRepository } from '../../protocols'
 import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
@@ -17,9 +16,7 @@ const makeFakeAccount = (): Account => ({
   email: makeFakeLogin().email
 })
 
-const makeFakeToken = (): Tokens => ({
-  accessToken: 'any_token'
-})
+const makeFakeToken = (): string => 'any_token'
 
 const makeFindAccountRepository = (): FindAccountRepository => {
   class FindAccountRepositoryStub implements FindAccountRepository {
@@ -47,7 +44,7 @@ const makeEncrypter = (): Encrypter => {
 
 const makeAuthenticate = (): Authenticate => {
   class AuthenticateStub implements Authenticate {
-    async auth (id: Guid): Promise<Tokens> {
+    async auth (id: Guid): Promise<string> {
       return makeFakeToken()
     }
   }
@@ -211,7 +208,7 @@ describe('Db Authentication Use Case', () => {
     expect(updateAccessTokenRepositorySpy)
       .toHaveBeenCalledWith(
         account.id,
-        makeFakeToken().accessToken
+        makeFakeToken()
       )
   })
 
@@ -233,7 +230,7 @@ describe('Db Authentication Use Case', () => {
 
     expect(tokens).toHaveProperty(
       'accessToken',
-      makeFakeToken().accessToken
+      makeFakeToken()
     )
   })
 })
