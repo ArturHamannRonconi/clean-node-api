@@ -26,7 +26,7 @@ class SignInController implements Controller<SignInHttpRequestBody> {
 
       return success(token)
     } catch (error) {
-      return serverError(error)
+      return serverError(error.message)
     }
   }
 }
