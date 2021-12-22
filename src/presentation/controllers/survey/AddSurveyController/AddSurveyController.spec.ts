@@ -2,6 +2,7 @@ import { Validation } from '../../../protocols/validators'
 import { HttpRequest, Json, StatusCode } from '../../../protocols/http'
 import { AddSurveyController } from '.'
 import { AddSurveyHttpRequestBody } from './AddSurveyHttpRequestBody'
+import { ServerError } from '../../../utils/errors'
 
 const makeFakeHttpRequest = (): HttpRequest<AddSurveyHttpRequestBody> => ({
   body: {
@@ -66,5 +67,20 @@ describe('Add Survery Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse).toHaveProperty('body', response)
+  })
+
+  it('Should returns 500 if validation throws', async () => {
+    const { sut, validation } = makeSUT()
+    const response = new Error('any_message')
+    jest
+      .spyOn(validation, 'validate')
+      .mockImplementation(async () => { throw response })
+
+    const httpRequest = makeFakeHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
+    expect(httpResponse).toHaveProperty('body', new ServerError())
+    expect(httpResponse).toHaveProperty('description', response.message)
   })
 })
