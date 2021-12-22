@@ -114,4 +114,19 @@ describe('Add Survery Controller', () => {
       question: makeFakeHttpRequest().body.question
     })
   })
+
+  it('Should returns 500 if addSurvey throws', async () => {
+    const { sut, addSurveyUseCase } = makeSUT()
+    const response = new Error('any_message')
+    jest
+      .spyOn(addSurveyUseCase, 'add')
+      .mockImplementation(async () => { throw response })
+
+    const httpRequest = makeFakeHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
+    expect(httpResponse).toHaveProperty('body', new ServerError())
+    expect(httpResponse).toHaveProperty('description', response.message)
+  })
 })
