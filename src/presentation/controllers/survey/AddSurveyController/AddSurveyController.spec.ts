@@ -109,8 +109,9 @@ describe('Add Survery Controller', () => {
     const httpRequest = makeFakeHttpRequest()
 
     await sut.handle(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith(
-      makeFakeHttpRequest().body
-    )
+    expect(addSpy).toHaveBeenCalledWith({
+      answers: makeFakeHttpRequest().body.answers,
+      question: makeFakeHttpRequest().body.question
+    })
   })
 })

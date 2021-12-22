@@ -13,10 +13,12 @@ class AddSurveyController implements Controller<AddSurveyHttpRequestBody> {
 
   async handle (httpRequest: HttpRequest<AddSurveyHttpRequestBody>): Promise<HttpResponse> {
     try {
+      const { answers, question } = httpRequest.body
+
       const error = await this.validation.validate(httpRequest.body)
       if (error) return badRequest(error)
 
-      await this.addSurveyUseCase.add(httpRequest.body)
+      await this.addSurveyUseCase.add({ answers, question })
 
       return null
     } catch (error) {
