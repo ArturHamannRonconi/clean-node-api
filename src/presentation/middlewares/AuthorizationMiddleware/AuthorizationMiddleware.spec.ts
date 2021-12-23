@@ -64,4 +64,17 @@ describe('Authorization Middleware', () => {
       httpRequest.headers.authorization
     )
   })
+
+  it('Should return 403 if confirmAccessTokenUseCase returns null', async () => {
+    const { sut, confirmAccessTokenUseCase } = makeSUT()
+    jest
+      .spyOn(confirmAccessTokenUseCase, 'confirm')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(null))
+      )
+
+    const httpResponse = await sut.handle(makeFakeHttpRequest())
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
+    expect(httpResponse).toHaveProperty('body', new AccessDeniedError())
+  })
 })
