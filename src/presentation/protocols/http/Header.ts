@@ -1,5 +1,5 @@
 interface Header {
-  headerName: string
+  name: string
   value: string
 }
 
