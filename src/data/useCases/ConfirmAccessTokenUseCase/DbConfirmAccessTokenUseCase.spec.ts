@@ -111,4 +111,16 @@ describe('Db Confirm Access Token Use Case', () => {
     await sut.confirm(confirmation)
     expect(byIdSpy).toHaveBeenCalledWith('any_id')
   })
+
+  it('Should be able to throws if ReaderAuthentication throws', async () => {
+    const { sut, findAccountRepository } = makeSUT()
+    jest
+      .spyOn(findAccountRepository, 'byId')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error()))
+      )
+
+    const error = sut.confirm(makeFakeAuthorization())
+    await expect(error).rejects.toThrow()
+  })
 })
