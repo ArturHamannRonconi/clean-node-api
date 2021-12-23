@@ -47,4 +47,16 @@ describe('Add Survey Use Case', () => {
     await sut.add(dto)
     expect(addSpy).toHaveBeenCalledWith(dto)
   })
+
+  it('Should be able throws if AddSurveyUseCase throws', async () => {
+    const { sut, addSurveyRepository } = makeSUT()
+    jest
+      .spyOn(addSurveyRepository, 'add')
+      .mockImplementationOnce(
+        async () => { throw new Error() }
+      )
+
+    const error = sut.add(makeFakeSurvey())
+    await expect(error).rejects.toThrow()
+  })
 })
