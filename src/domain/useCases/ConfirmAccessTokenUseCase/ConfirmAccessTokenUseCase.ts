@@ -1,7 +1,7 @@
 import { ConfirmAccessTokenResponseDTO, ConfirmAccessTokenRequestDTO } from '.'
 
 interface ConfirmAccessTokenUseCase {
-  confirm: (accessToken: ConfirmAccessTokenRequestDTO) => Promise<ConfirmAccessTokenResponseDTO>
+  confirm: (confirmationData: ConfirmAccessTokenRequestDTO) => Promise<ConfirmAccessTokenResponseDTO>
 }
 
 export { ConfirmAccessTokenUseCase }

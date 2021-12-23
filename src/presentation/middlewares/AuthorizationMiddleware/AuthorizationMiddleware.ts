@@ -1,3 +1,4 @@
+import { Role } from '../../../domain/protocols/Role'
 import { ConfirmAccessTokenUseCase } from '../../../domain/useCases/ConfirmAccessTokenUseCase'
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { Middleware } from '../../protocols/Middleware'
@@ -7,7 +8,8 @@ import { forbidden } from '../../utils/http/forbidden'
 
 class AuthorizationMiddleware<T> implements Middleware<T> {
   constructor (
-    private readonly confirmAccessTokenUseCase: ConfirmAccessTokenUseCase
+    private readonly confirmAccessTokenUseCase: ConfirmAccessTokenUseCase,
+    private readonly role: Role
   ) {}
 
   async handle (httpRequest: HttpRequest<T>): Promise<HttpResponse> {
@@ -17,7 +19,7 @@ class AuthorizationMiddleware<T> implements Middleware<T> {
       return forbidden(new AccessDeniedError())
 
     const accountId = await this.confirmAccessTokenUseCase
-      .confirm(headers.authorization)
+      .confirm({ authorization: headers.authorization, role: this.role })
 
     if (!accountId)
       return forbidden(new AccessDeniedError())
