@@ -20,6 +20,10 @@ const makeFakeToken = (): string => 'any_token'
 
 const makeFindAccountRepository = (): FindAccountRepository => {
   class FindAccountRepositoryStub implements FindAccountRepository {
+    async byId (id: string): Promise<Account> {
+      return await new Promise(resolve => resolve(makeFakeAccount()))
+    }
+
     async byEmail (email: string): Promise<Account> {
       return await new Promise(resolve => resolve(makeFakeAccount()))
     }
