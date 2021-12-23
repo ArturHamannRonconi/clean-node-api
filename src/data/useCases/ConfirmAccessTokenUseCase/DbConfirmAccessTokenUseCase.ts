@@ -7,8 +7,8 @@ class DbConfirmAccessTokenUseCase implements ConfirmAccessTokenUseCase {
   ) {}
 
   async confirm ({ authorization }: ConfirmAccessTokenRequestDTO): Promise<ConfirmAccessTokenResponseDTO> {
-    await this.readerAuthentication.readAccessToken(authorization)
-    return null
+    const accountId = await this.readerAuthentication.readAccessToken(authorization)
+    if (!accountId) return null
   }
 }
 
