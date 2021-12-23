@@ -1,7 +1,7 @@
 import { Guid } from '../../protocols/Guid'
 
 interface ConfirmAccessTokenResponseDTO {
-  userId: Guid
+  accountId: Guid
 }
 
 export { ConfirmAccessTokenResponseDTO }

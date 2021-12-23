@@ -8,7 +8,7 @@ const makeFakeConfirmAccessTokenUseCase = (): ConfirmAccessTokenUseCase => {
   class ConfirmAccessTokenUseCaseStub implements ConfirmAccessTokenUseCase {
     async confirm (accessToken: ConfirmAccessTokenRequestDTO): Promise<ConfirmAccessTokenResponseDTO> {
       return await new Promise(
-        resolve => resolve({ userId: 'any_id' })
+        resolve => resolve({ accountId: 'any_id' })
       )
     }
   }
@@ -83,10 +83,10 @@ describe('Authorization Middleware', () => {
     await expect(error).rejects.toThrow()
   })
 
-  it('Should return 200 of confirmAccessTokenUseCase returns an user id', async () => {
+  it('Should return 200 of confirmAccessTokenUseCase returns an account id', async () => {
     const { sut } = makeSUT()
 
     const httpResponse = await sut.handle(makeFakeHttpRequest())
-    expect(httpResponse.body).toHaveProperty('userId', 'any_id')
+    expect(httpResponse.body).toHaveProperty('accountId', 'any_id')
   })
 })

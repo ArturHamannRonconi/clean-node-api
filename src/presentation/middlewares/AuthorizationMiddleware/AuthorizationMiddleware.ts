@@ -16,13 +16,13 @@ class AuthorizationMiddleware<T> implements Middleware<T> {
     if (!headers || !headers.authorization)
       return forbidden(new AccessDeniedError())
 
-    const userId = await this.confirmAccessTokenUseCase
+    const accountId = await this.confirmAccessTokenUseCase
       .confirm(headers.authorization)
 
-    if (!userId)
+    if (!accountId)
       return forbidden(new AccessDeniedError())
 
-    return success(userId)
+    return success(accountId)
   }
 }
 
