@@ -60,4 +60,16 @@ describe('Db Confirm Access Token Use Case', () => {
     const error = sut.confirm(makeFakeAuthorization())
     await expect(error).rejects.toThrow()
   })
+
+  it('Should be able to return null if ReaderAuthentication returns null', async () => {
+    const { sut, readerAuthentication } = makeSUT()
+    jest
+      .spyOn(readerAuthentication, 'readAccessToken')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => resolve(null))
+      )
+
+    const nullable = await sut.confirm(makeFakeAuthorization())
+    expect(nullable).toBeNull()
+  })
 })
