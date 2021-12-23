@@ -2,6 +2,7 @@ import { ConfirmAccessTokenUseCase } from '../../../domain/useCases/ConfirmAcces
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { Middleware } from '../../protocols/Middleware'
 import { AccessDeniedError } from '../../utils/errors'
+import { success } from '../../utils/http'
 import { forbidden } from '../../utils/http/forbidden'
 
 class AuthorizationMiddleware<T> implements Middleware<T> {
@@ -15,11 +16,13 @@ class AuthorizationMiddleware<T> implements Middleware<T> {
     if (!headers || !headers.authorization)
       return forbidden(new AccessDeniedError())
 
-    const account = await this.confirmAccessTokenUseCase
+    const userId = await this.confirmAccessTokenUseCase
       .confirm(headers.authorization)
 
-    if (!account)
+    if (!userId)
       return forbidden(new AccessDeniedError())
+
+    return success(userId)
   }
 }
 

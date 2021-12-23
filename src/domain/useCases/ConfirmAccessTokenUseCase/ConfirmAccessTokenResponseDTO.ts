@@ -1,7 +1,7 @@
-import { Account } from '../../models'
+import { Guid } from '../../protocols/Guid'
 
 interface ConfirmAccessTokenResponseDTO {
-  account: Account
+  userId: Guid
 }
 
 export { ConfirmAccessTokenResponseDTO }
