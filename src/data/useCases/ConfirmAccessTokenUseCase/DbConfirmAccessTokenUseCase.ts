@@ -12,7 +12,9 @@ class DbConfirmAccessTokenUseCase implements ConfirmAccessTokenUseCase {
     const accountId = await this.readerAuthentication.readAccessToken(authorization)
     if (!accountId) return null
 
-    await this.findAccountRepository.byId(accountId as string)
+    const account = await this.findAccountRepository
+      .byId(accountId as string)
+    if (!account) return null
   }
 }
 
