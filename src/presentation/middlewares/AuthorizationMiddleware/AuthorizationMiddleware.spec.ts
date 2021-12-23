@@ -77,4 +77,18 @@ describe('Authorization Middleware', () => {
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
     expect(httpResponse).toHaveProperty('body', new AccessDeniedError())
   })
+
+  it('Should return 500 if confirmAccessTokenUseCase throws', async () => {
+    const { sut, confirmAccessTokenUseCase } = makeSUT()
+    jest
+      .spyOn(confirmAccessTokenUseCase, 'confirm')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error()))
+      )
+
+    const error = sut.handle(makeFakeHttpRequest())
+    await expect(error).rejects.toThrow()
+  })
+
+  
 })
