@@ -9,7 +9,10 @@ const makeFakeConfirmAccessTokenUseCase = (): ConfirmAccessTokenUseCase => {
   class ConfirmAccessTokenUseCaseStub implements ConfirmAccessTokenUseCase {
     async confirm (confirmationData: ConfirmAccessTokenRequestDTO): Promise<ConfirmAccessTokenResponseDTO> {
       return await new Promise(
-        resolve => resolve({ accountId: 'any_id' })
+        resolve => resolve({
+          accountId: 'any_id',
+          role: Role.ADMIN
+        })
       )
     }
   }
@@ -27,11 +30,10 @@ interface SutTypes {
   confirmAccessTokenUseCase: ConfirmAccessTokenUseCase
 }
 
-const makeSUT = (role: Role): SutTypes => {
+const makeSUT = (): SutTypes => {
   const confirmAccessTokenUseCase = makeFakeConfirmAccessTokenUseCase()
   const sut = new AuthorizationMiddleware(
-    confirmAccessTokenUseCase,
-    role
+    confirmAccessTokenUseCase
   )
 
   return {
@@ -42,8 +44,7 @@ const makeSUT = (role: Role): SutTypes => {
 
 describe('Authorization Middleware', () => {
   it('Should return 403 if no x-access-token exists', async () => {
-    const role = Role.ADMIN
-    const { sut } = makeSUT(role)
+    const { sut } = makeSUT()
 
     const httpResponse = await sut.handle({})
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
@@ -51,21 +52,18 @@ describe('Authorization Middleware', () => {
   })
 
   it('Should to able to call confirmAccessTokenUseCase', async () => {
-    const role = Role.ADMIN
-    const { sut, confirmAccessTokenUseCase } = makeSUT(role)
+    const { sut, confirmAccessTokenUseCase } = makeSUT()
     const confirmSpy = jest.spyOn(confirmAccessTokenUseCase, 'confirm')
     const httpRequest = makeFakeHttpRequest()
 
     await sut.handle(httpRequest)
     expect(confirmSpy).toHaveBeenCalledWith({
-      authorization: httpRequest.headers.authorization,
-      role
+      authorization: httpRequest.headers.authorization
     })
   })
 
   it('Should return 403 if confirmAccessTokenUseCase returns null', async () => {
-    const role = Role.ADMIN
-    const { sut, confirmAccessTokenUseCase } = makeSUT(role)
+    const { sut, confirmAccessTokenUseCase } = makeSUT()
     jest
       .spyOn(confirmAccessTokenUseCase, 'confirm')
       .mockReturnValueOnce(
@@ -78,8 +76,7 @@ describe('Authorization Middleware', () => {
   })
 
   it('Should return 500 if confirmAccessTokenUseCase throws', async () => {
-    const role = Role.ADMIN
-    const { sut, confirmAccessTokenUseCase } = makeSUT(role)
+    const { sut, confirmAccessTokenUseCase } = makeSUT()
     jest
       .spyOn(confirmAccessTokenUseCase, 'confirm')
       .mockReturnValueOnce(
@@ -91,10 +88,10 @@ describe('Authorization Middleware', () => {
   })
 
   it('Should return 200 of confirmAccessTokenUseCase returns an account id', async () => {
-    const role = Role.ADMIN
-    const { sut } = makeSUT(role)
+    const { sut } = makeSUT()
 
     const httpResponse = await sut.handle(makeFakeHttpRequest())
+    expect(httpResponse.body).toHaveProperty('role')
     expect(httpResponse.body).toHaveProperty('accountId', 'any_id')
   })
 })
