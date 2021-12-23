@@ -1,7 +1,34 @@
 import { Guid } from '../../../domain/protocols/Guid'
+import { DbConfirmAccessTokenUseCase } from './DbConfirmAccessTokenUseCase'
 import { ReaderAuthentication } from '../../protocols/providers/ReaderAuthentication'
 import { ConfirmAccessTokenRequestDTO } from '../../../domain/useCases/ConfirmAccessTokenUseCase'
-import { DbConfirmAccessTokenUseCase } from './DbConfirmAccessTokenUseCase'
+import { FindAccountRepository } from '../../protocols/repositories/AccountRepository/FindAccountRepository'
+import { Account } from '../../../domain/models'
+
+const makeFakeAccount = (): Account => ({
+  id: 'any_id',
+  name: 'any_name',
+  email: 'any_email',
+  password: 'any_password'
+})
+
+const makeFakeFindAccountRepository = (): FindAccountRepository => {
+  class FindAccountRepositoryStub implements FindAccountRepository {
+    async byId (id: string): Promise<Account> {
+      return await new Promise(
+        resolve => resolve(makeFakeAccount())
+      )
+    }
+
+    async byEmail (email: string): Promise<Account> {
+      return await new Promise(
+        resolve => resolve(makeFakeAccount())
+      )
+    }
+  }
+
+  return new FindAccountRepositoryStub()
+}
 
 const makeFakeReaderAuthentication = (): ReaderAuthentication => {
   class ReaderAuthenticationStub implements ReaderAuthentication {
@@ -20,25 +47,28 @@ const makeFakeAuthorization = (): ConfirmAccessTokenRequestDTO => ({
 })
 
 interface SutTypes {
-  readerAuthentication: ReaderAuthentication
   sut: DbConfirmAccessTokenUseCase
-
+  readerAuthentication: ReaderAuthentication
+  findAccountRepository: FindAccountRepository
 }
 
 const makeSUT = (): SutTypes => {
+  const findAccountRepository = makeFakeFindAccountRepository()
   const readerAuthentication = makeFakeReaderAuthentication()
   const sut = new DbConfirmAccessTokenUseCase(
-    readerAuthentication
+    readerAuthentication,
+    findAccountRepository
   )
 
   return {
     sut,
-    readerAuthentication
+    readerAuthentication,
+    findAccountRepository
   }
 }
 
 describe('Db Confirm Access Token Use Case', () => {
-  it('Should be able to call', async () => {
+  it('Should be able to call ReaderAuthentication', async () => {
     const { sut, readerAuthentication } = makeSUT()
     const readSpy = jest.spyOn(readerAuthentication, 'readAccessToken')
     const confirmation = makeFakeAuthorization()
@@ -71,5 +101,14 @@ describe('Db Confirm Access Token Use Case', () => {
 
     const nullable = await sut.confirm(makeFakeAuthorization())
     expect(nullable).toBeNull()
+  })
+
+  it('Should be able to call FindAccountRepository', async () => {
+    const { sut, findAccountRepository } = makeSUT()
+    const byIdSpy = jest.spyOn(findAccountRepository, 'byId')
+    const confirmation = makeFakeAuthorization()
+
+    await sut.confirm(confirmation)
+    expect(byIdSpy).toHaveBeenCalledWith('any_id')
   })
 })
