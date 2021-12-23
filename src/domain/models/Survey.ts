@@ -1,7 +1,7 @@
 import { Guid } from '../protocols/Guid'
 
 interface Answer {
-  readonly image: string
+  readonly image?: string
   readonly answer: string
 }
 
