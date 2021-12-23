@@ -2,7 +2,7 @@ import { AddSurveyUseCase } from '../../../../domain/useCases/AddSurveyUseCase'
 import { Controller } from '../../../protocols'
 import { HttpRequest, HttpResponse } from '../../../protocols/http'
 import { Validation } from '../../../protocols/validators'
-import { badRequest, serverError } from '../../../utils/http'
+import { badRequest, created, serverError } from '../../../utils/http'
 import { AddSurveyHttpRequestBody } from './AddSurveyHttpRequestBody'
 
 class AddSurveyController implements Controller<AddSurveyHttpRequestBody> {
@@ -20,7 +20,7 @@ class AddSurveyController implements Controller<AddSurveyHttpRequestBody> {
 
       await this.addSurveyUseCase.add({ answers, question })
 
-      return null
+      return created({})
     } catch (error) {
       return serverError(error.message)
     }
