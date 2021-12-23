@@ -89,6 +89,4 @@ describe('Authorization Middleware', () => {
     const error = sut.handle(makeFakeHttpRequest())
     await expect(error).rejects.toThrow()
   })
-
-  
 })
