@@ -1,12 +1,11 @@
-import { Guid } from '../protocols/Guid'
+import { Entity } from '.'
 
 interface Answer {
   readonly image?: string
   readonly answer: string
 }
 
-interface Survey {
-  readonly id: Guid
+interface Survey extends Entity {
   readonly question: string
   readonly answers: Answer[]
 }
