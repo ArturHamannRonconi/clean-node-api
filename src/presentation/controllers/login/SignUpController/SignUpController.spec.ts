@@ -4,6 +4,7 @@ import { EmailValidator, Validation } from '../../../protocols/validators'
 import { AccountAlreadyExistsError, MissingParamError, ServerError } from '../../../utils/errors'
 import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../../domain/useCases/AddAccountUseCase'
 import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
+import { Role } from '../../../../domain/protocols/Role'
 
 const makeVerifyAccountExistsUseCase = (): VerifyAccountExistsUseCase => {
   class VerifyAccountExistsStub implements VerifyAccountExistsUseCase {
@@ -104,7 +105,8 @@ describe('SignUp Controller', () => {
     expect(addAccountSpy).toHaveBeenCalledWith({
       email: 'any_email@mail.com',
       name: 'any_name',
-      password: 'any_password'
+      password: 'any_password',
+      role: Role.NORMAL
     })
   })
 

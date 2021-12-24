@@ -9,6 +9,7 @@ import { Controller } from '../../../protocols/Controller'
 
 import { Validation } from '../../../protocols/validators'
 import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { Role } from '../../../../domain/protocols/Role'
 
 class SignUpController implements Controller<SignUpHttpRequestBody> {
   constructor (
@@ -33,7 +34,7 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
         return conflict(new AccountAlreadyExistsError())
 
       const accountData = await this.addAccountUseCase
-        .add({ email, name, password })
+        .add({ email, name, password, role: Role.NORMAL })
 
       return created(accountData)
     } catch (error) {
