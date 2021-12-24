@@ -5,12 +5,12 @@ import { Middleware } from '../../protocols/Middleware'
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { ConfirmAccessTokenUseCase } from '../../../domain/useCases/ConfirmAccessTokenUseCase'
 
-class AuthorizationMiddleware<T> implements Middleware<T> {
+class AuthorizationMiddleware implements Middleware {
   constructor (
     private readonly confirmAccessTokenUseCase: ConfirmAccessTokenUseCase
   ) {}
 
-  async handle (httpRequest: HttpRequest<T>): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     const { headers } = httpRequest
 
     if (!headers || !headers.authorization)

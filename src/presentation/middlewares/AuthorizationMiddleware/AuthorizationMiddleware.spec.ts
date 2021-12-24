@@ -26,7 +26,7 @@ const makeFakeHttpRequest = (): HttpRequest<any> => ({
 })
 
 interface SutTypes {
-  sut: AuthorizationMiddleware<any>
+  sut: AuthorizationMiddleware
   confirmAccessTokenUseCase: ConfirmAccessTokenUseCase
 }
 
