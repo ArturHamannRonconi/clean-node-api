@@ -1,20 +1,25 @@
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 
-import { Authenticate } from '../../../data/protocols'
+import { Authenticate, ReaderAuthentication } from '../../../data/protocols/providers'
 import { Guid } from '../../../domain/protocols/Guid'
 
-class AuthenticateJWTAdapter implements Authenticate {
+class AuthenticateJWTAdapter implements Authenticate, ReaderAuthentication {
   constructor (
     private readonly JWT_SECRET: string,
     private readonly expresIn: string | number
   ) { }
 
+  async readAccessToken (accessToken: string): Promise<Guid> {
+    verify(accessToken, this.JWT_SECRET)
+    return null
+  }
+
   async auth (id: Guid): Promise<string> {
-    const userId = id as string
+    const accountId = id as string
 
     const accessToken = sign(
-      { userId }, this.JWT_SECRET,
-      { subject: userId, expiresIn: this.expresIn }
+      { accountId }, this.JWT_SECRET,
+      { subject: accountId, expiresIn: this.expresIn }
     )
 
     return accessToken
