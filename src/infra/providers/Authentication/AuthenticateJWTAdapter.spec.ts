@@ -75,5 +75,17 @@ describe('Authenticate JWT Adapter', () => {
       const guid = await sut.readAccessToken('any_token')
       expect(guid).toEqual('any_id')
     })
+
+    it('Should throws if verify throws', async () => {
+      const { sut } = makeSUT()
+      jest
+        .spyOn(jwt, 'verify')
+        .mockImplementationOnce(
+          () => { throw new Error() }
+        )
+
+      const error = sut.readAccessToken('any_token')
+      await expect(error).rejects.toThrow()
+    })
   })
 })
