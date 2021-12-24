@@ -43,7 +43,7 @@ const makeFakeReaderAuthentication = (): ReaderAuthentication => {
 }
 
 const makeFakeAuthorization = (): ConfirmAccessTokenRequestDTO => ({
-  authorization: 'any_token'
+  authorization: 'Bearer any_token'
 })
 
 interface SutTypes {
@@ -75,7 +75,7 @@ describe('Db Confirm Access Token Use Case', () => {
 
     await sut.confirm(confirmation)
     expect(readSpy).toHaveBeenCalledWith(
-      confirmation.authorization
+      confirmation.authorization.split(' ')[1]
     )
   })
 
