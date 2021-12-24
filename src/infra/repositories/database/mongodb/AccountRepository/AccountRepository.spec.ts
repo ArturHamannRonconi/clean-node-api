@@ -35,4 +35,13 @@ describe('Account Mongo Repository', () => {
 
     expect(createdAccount.id).toBe(account.id)
   })
+
+  it('Should be able to return an account by id', async () => {
+    const sut = makeSUT()
+    const fakeAccount = makeFakeAccount()
+    const { id } = await sut.add(fakeAccount)
+    const account = await sut.byId(id as string)
+
+    expect(account.email).toBe(fakeAccount.email)
+  })
 })
