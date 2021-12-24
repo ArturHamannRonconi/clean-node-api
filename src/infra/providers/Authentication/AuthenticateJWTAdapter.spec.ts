@@ -68,5 +68,12 @@ describe('Authenticate JWT Adapter', () => {
       await sut.readAccessToken('any_token')
       expect(verifySpy).toHaveBeenCalledWith('any_token', secret)
     })
+
+    it('Should return a Guid on verify success', async () => {
+      const { sut } = makeSUT()
+
+      const guid = await sut.readAccessToken('any_token')
+      expect(guid).toEqual('any_id')
+    })
   })
 })
