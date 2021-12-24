@@ -14,12 +14,7 @@ class AccountMongoRepository implements AddAccountRepository, FindAccountReposit
 
     if (!document) return null
 
-    return {
-      id: document._id.toString(),
-      email: document.email,
-      name: document.name,
-      password: document.password
-    }
+    return MongoHelperConnection.map<Account>(document)
   }
 
   async byEmail (email: string): Promise<Account> {
@@ -30,12 +25,7 @@ class AccountMongoRepository implements AddAccountRepository, FindAccountReposit
 
     if (!document) return null
 
-    return {
-      id: document._id.toString(),
-      email: document.email,
-      name: document.name,
-      password: document.password
-    }
+    return MongoHelperConnection.map<Account>(document)
   }
 
   async add (addAccount: AddAccountRequestDTO): Promise<Account> {
