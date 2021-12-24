@@ -10,8 +10,8 @@ class AuthenticateJWTAdapter implements Authenticate, ReaderAuthentication {
   ) { }
 
   async readAccessToken (accessToken: string): Promise<Guid> {
-    verify(accessToken, this.JWT_SECRET)
-    return null
+    const { sub: accountId } = verify(accessToken, this.JWT_SECRET)
+    return accountId as Guid
   }
 
   async auth (id: Guid): Promise<string> {
