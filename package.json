@@ -35,11 +35,14 @@
     "typescript": "*"
   },
   "scripts": {
+    "docker-restart": "yarn down && yarn build && yarn up",
+    "down": "docker-compose down",
+    "up": "docker-compose up -d",
     "debug": "node --inspect=0.0.0.0:9229 --nolazy dist/main/server.js",
     "start": "node dist/main/server.js",
     "build": "yarn clean && tsc && yarn copy",
     "copy": "cp package.json dist/package.json && cp yarn.lock dist/yarn.lock",
-    "clean": "rm -fr dist/",
+    "clean": "docker rmi clean-node-api_node && docker volume prune -f && rm -fr dist/",
     "dev": "ts-node-dev --ignore-watch node_modules --transpile-only --respawn --clear src/main/server.ts",
     "test": "jest -i --passWithNoTests --silent --noStackTrace",
     "test:verbose": "jest -i --passWithNoTests",
