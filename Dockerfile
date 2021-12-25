@@ -7,4 +7,4 @@ COPY package.json .
 RUN npm install --only=prod
 
 COPY dist/ /usr/app/dist
-CMD ["npm", "run", "debug"]
+CMD ["npm", "run", "prod"]
