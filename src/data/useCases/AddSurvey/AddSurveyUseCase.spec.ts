@@ -1,13 +1,17 @@
 import { AddSurveyRequestDTO } from '../../../domain/useCases/AddSurveyUseCase'
 import { Survey } from '../../../domain/models'
 import { DbAddSurveyUseCase } from './DbAddSurveyUseCase'
-import { AddSurveyRepository } from '../../protocols/repositories/SurveyRepository/AddSurveyRepository'
+import { AddSurveyRepository, AddSurveyRepositoryRequestDTO } from '../../protocols/repositories/SurveyRepository'
 
 const makeAddSurveyRepository = (): AddSurveyRepository => {
   class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (survey: AddSurveyRequestDTO): Promise<Survey> {
+    async add (survey: AddSurveyRepositoryRequestDTO): Promise<Survey> {
       return await new Promise(
-        resolve => resolve({ ...makeFakeSurvey(), id: 'any_id' })
+        resolve => resolve({
+          ...makeFakeSurvey(),
+          id: 'any_id',
+          ownerId: 'any_account_id'
+        })
       )
     }
   }
@@ -16,6 +20,8 @@ const makeAddSurveyRepository = (): AddSurveyRepository => {
 }
 
 const makeFakeSurvey = (): AddSurveyRequestDTO => ({
+  accountId: 'any_id',
+  role: 0,
   question: 'any_question?',
   answers: [
     { answer: 'any_answer', image: 'any_image' }
@@ -42,10 +48,13 @@ describe('Add Survey Use Case', () => {
   it('Should be to call AddSurveyRepository with correct values', async () => {
     const { sut, addSurveyRepository } = makeSUT()
     const addSpy = jest.spyOn(addSurveyRepository, 'add')
-    const dto = makeFakeSurvey()
+    const { role, accountId: ownerId, ...addSurveyRepoDTO } = makeFakeSurvey()
 
-    await sut.add(dto)
-    expect(addSpy).toHaveBeenCalledWith(dto)
+    await sut.add({ role, accountId: ownerId, ...addSurveyRepoDTO })
+    expect(addSpy).toHaveBeenCalledWith({
+      ownerId,
+      ...addSurveyRepoDTO
+    })
   })
 
   it('Should be able throws if AddSurveyUseCase throws', async () => {

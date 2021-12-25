@@ -2,13 +2,12 @@ import request from 'supertest'
 
 import { app } from '../../app'
 import { MongoHelperConnection } from '../../../infra/repositories/database/mongodb/helpers/MongoHelperConnection'
-import { AddSurveyRequestDTO } from '../../../domain/useCases/AddSurveyUseCase'
 import { AddAccountRequestDTO } from '../../../domain/useCases/AddAccountUseCase'
 import { Role } from '../../../domain/protocols/Role'
 
 const { MONGO_URL } = process.env
 
-const makeFakeSurvey = (): AddSurveyRequestDTO => ({
+const makeFakeSurvey = (): any => ({
   question: 'any_question?',
   answers: [
     { answer: 'any_answer', image: 'any_image' }
@@ -42,12 +41,23 @@ describe('survey routes', () => {
   })
   afterAll(async () => await MongoHelperConnection.disconnect())
   afterEach(async () => {
-    const collection = await MongoHelperConnection
+    const surveysCollection = await MongoHelperConnection
       .getCollection('surveys')
-    await collection.deleteMany({})
+    const accountsCollection = await MongoHelperConnection
+      .getCollection('accounts')
+    await surveysCollection.deleteMany({})
+    await accountsCollection.deleteMany({})
   })
 
   describe('Add Survey', () => {
+    it('should return 201 on success', async () => {
+      await request(app)
+        .post('/api/v1/survey')
+        .set('authorization', `Bearer ${adminAccountToken}`)
+        .send(makeFakeSurvey())
+        .expect(201)
+    })
+
     it('should return 403 if no access token is provided', async () => {
       await request(app)
         .post('/api/v1/survey')

@@ -1,12 +1,15 @@
 import { AddSurveyController } from '.'
-import { ServerError } from '../../../utils/errors'
+import { MissingParamError, ServerError } from '../../../utils/errors'
 import { Validation } from '../../../protocols/validators'
 import { AddSurveyHttpRequestBody } from './AddSurveyHttpRequestBody'
 import { HttpRequest, Json, StatusCode } from '../../../protocols/http'
 import { AddSurveyRequestDTO, AddSurveyUseCase } from '../../../../domain/useCases/AddSurveyUseCase'
+import { Role } from '../../../../domain/protocols/Role'
 
 const makeFakeHttpRequest = (): HttpRequest<AddSurveyHttpRequestBody> => ({
   body: {
+    role: Role.ADMIN,
+    accountId: 'any_id',
     question: 'any_question',
     answers: [
       { image: 'any_image', answer: 'any_answer' }
@@ -26,8 +29,8 @@ const validationStub = (): Validation => {
 
 const addSurveyUseCaseStub = (): AddSurveyUseCase => {
   class AddSurveyUseCaseStub implements AddSurveyUseCase {
-    async add (survey: AddSurveyRequestDTO): Promise<void> {
-      return await new Promise(resolve => resolve())
+    async add (survey: AddSurveyRequestDTO): Promise<boolean> {
+      return await new Promise(resolve => resolve(true))
     }
   }
 
@@ -69,7 +72,7 @@ describe('Add Survery Controller', () => {
 
   it('Should returns 400 if returns an error', async () => {
     const { sut, validation } = makeSUT()
-    const response = new Error()
+    const response = new MissingParamError('answers')
 
     jest
       .spyOn(validation, 'validate')
@@ -79,13 +82,17 @@ describe('Add Survery Controller', () => {
     const httpRequest = {
       body: {
         question: 'any_question',
-        answers: undefined
+        answers: undefined,
+        accountId: undefined,
+        role: undefined
       }
     }
 
     const httpResponse = await sut.handle(httpRequest)
+    console.log(httpResponse)
+
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', response)
+    expect(httpResponse.body).toHaveProperty('error', response.message)
   })
 
   it('Should returns 500 if validation throws', async () => {
@@ -111,7 +118,9 @@ describe('Add Survery Controller', () => {
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith({
       answers: makeFakeHttpRequest().body.answers,
-      question: makeFakeHttpRequest().body.question
+      question: makeFakeHttpRequest().body.question,
+      role: makeFakeHttpRequest().body.role,
+      accountId: makeFakeHttpRequest().body.accountId
     })
   })
 

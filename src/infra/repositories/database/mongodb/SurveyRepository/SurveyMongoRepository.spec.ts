@@ -1,10 +1,11 @@
-import { AddSurveyRequestDTO } from '../../../../../domain/useCases/AddSurveyUseCase'
+import { AddSurveyRepositoryRequestDTO } from '../../../../../data/protocols/repositories/SurveyRepository'
 import { MongoHelperConnection } from '../helpers/MongoHelperConnection'
 import { SurveyMongoRepository } from './SurveyMongoRepository'
 
 const { MONGO_URL } = process.env
 const sut = (): SurveyMongoRepository => new SurveyMongoRepository()
-const makeFakeSurvey = (): AddSurveyRequestDTO => ({
+const makeFakeSurvey = (): AddSurveyRepositoryRequestDTO => ({
+  ownerId: 'any_id',
   question: 'any_question?',
   answers: [
     { answer: 'any_answer', image: 'any_image' }

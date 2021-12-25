@@ -11,12 +11,9 @@ class TokenMongoRepository implements UpdateTokenRepository {
     const _id = new ObjectId(id)
     const accessToken = token
 
-    const findedToken = await tokensCollection
-      .find(_id)
-      .limit(1)
-      .count()
+    const tokenAlreadyExists = await tokensCollection.findOne(_id)
 
-    if (findedToken) {
+    if (tokenAlreadyExists) {
       await tokensCollection.updateOne(
         { _id }, { $set: { accessToken } }
       )

@@ -19,6 +19,8 @@ class DbConfirmAccessTokenUseCase implements ConfirmAccessTokenUseCase {
     const account = await this.findAccountRepository
       .byId(accountId as string)
     if (!account) return null
+
+    return { accountId, role: account.role }
   }
 }
 

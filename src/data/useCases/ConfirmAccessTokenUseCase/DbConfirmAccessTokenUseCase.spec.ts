@@ -4,12 +4,14 @@ import { ReaderAuthentication } from '../../protocols/providers/ReaderAuthentica
 import { ConfirmAccessTokenRequestDTO } from '../../../domain/useCases/ConfirmAccessTokenUseCase'
 import { FindAccountRepository } from '../../protocols/repositories/AccountRepository/FindAccountRepository'
 import { Account } from '../../../domain/models'
+import { Role } from '../../../domain/protocols/Role'
 
 const makeFakeAccount = (): Account => ({
   id: 'any_id',
   name: 'any_name',
   email: 'any_email',
-  password: 'any_password'
+  password: 'any_password',
+  role: Role.ADMIN
 })
 
 const makeFakeFindAccountRepository = (): FindAccountRepository => {

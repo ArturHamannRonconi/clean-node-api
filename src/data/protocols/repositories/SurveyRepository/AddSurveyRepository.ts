@@ -1,8 +1,8 @@
 import { Survey } from '../../../../domain/models'
-import { AddSurveyRequestDTO } from '../../../../domain/useCases/AddSurveyUseCase'
+import { AddSurveyRepositoryRequestDTO } from '.'
 
 interface AddSurveyRepository {
-  add: (survey: AddSurveyRequestDTO) => Promise<Survey>
+  add: (survey: AddSurveyRepositoryRequestDTO) => Promise<Survey>
 }
 
 export { AddSurveyRepository }
