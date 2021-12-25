@@ -33,10 +33,10 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
       if (accountAlreadyExists)
         return conflict(new AccountAlreadyExistsError())
 
-      const accountData = await this.addAccountUseCase
+      await this.addAccountUseCase
         .add({ email, name, password, role: Role.NORMAL })
 
-      return created(accountData)
+      return created()
     } catch (error) {
       return serverError(error.message)
     }

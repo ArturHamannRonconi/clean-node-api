@@ -52,7 +52,9 @@ describe('Sign In Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('email'))
+    expect(httpResponse.body).toHaveProperty('error',
+      new MissingParamError('email').message
+    )
   })
 
   it('Should be able to return 400 if password doesn\'t sended', async () => {
@@ -66,7 +68,9 @@ describe('Sign In Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('password'))
+    expect(httpResponse.body).toHaveProperty('error',
+      new MissingParamError('password').message
+    )
   })
 
   it('Should call Authentication with correct values', async () => {
@@ -131,7 +135,7 @@ describe('Sign In Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse)
       .toHaveProperty('statusCode', StatusCode.UNAUTORIZED)
-    expect(httpResponse)
-      .toHaveProperty('body', new UnautorizedError())
+    expect(httpResponse.body)
+      .toHaveProperty('error', new UnautorizedError().message)
   })
 })

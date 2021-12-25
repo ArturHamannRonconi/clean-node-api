@@ -145,11 +145,6 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.CREATED)
-    expect(httpResponse).toHaveProperty('body', {
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com'
-    })
   })
 
   it('Should be able to return 409 if account already exists', async () => {
@@ -167,7 +162,9 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.CONFLICT)
-    expect(httpResponse).toHaveProperty('body', new AccountAlreadyExistsError())
+    expect(httpResponse.body).toHaveProperty('error',
+      new AccountAlreadyExistsError().message
+    )
   })
 
   it('Should call validation with correct value', async () => {
@@ -204,6 +201,8 @@ describe('SignUp Controller', () => {
     }
 
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('email'))
+    expect(httpResponse.body).toHaveProperty('error',
+      new MissingParamError('email').message
+    )
   })
 })

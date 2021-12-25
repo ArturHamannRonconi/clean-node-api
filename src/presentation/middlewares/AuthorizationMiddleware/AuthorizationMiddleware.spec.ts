@@ -43,12 +43,14 @@ const makeSUT = (): SutTypes => {
 }
 
 describe('Authorization Middleware', () => {
-  it('Should return 403 if no x-access-token exists', async () => {
+  it('Should return 403 if no authorization header exists', async () => {
     const { sut } = makeSUT()
 
     const httpResponse = await sut.handle({})
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
-    expect(httpResponse).toHaveProperty('body', new AccessDeniedError())
+    expect(httpResponse.body).toHaveProperty('error',
+      new AccessDeniedError().message
+    )
   })
 
   it('Should to able to call confirmAccessTokenUseCase', async () => {
@@ -72,7 +74,9 @@ describe('Authorization Middleware', () => {
 
     const httpResponse = await sut.handle(makeFakeHttpRequest())
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
-    expect(httpResponse).toHaveProperty('body', new AccessDeniedError())
+    expect(httpResponse.body).toHaveProperty('error',
+      new AccessDeniedError().message
+    )
   })
 
   it('Should return 500 if confirmAccessTokenUseCase throws', async () => {

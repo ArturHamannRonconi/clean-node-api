@@ -3,7 +3,9 @@ import { StatusCode, HttpResponseMessage } from '../../protocols/http'
 
 const unautorized = (): HttpResponseMessage => ({
   statusCode: StatusCode.UNAUTORIZED,
-  body: new UnautorizedError()
+  body: {
+    error: new UnautorizedError().message
+  }
 })
 
 export { unautorized }
