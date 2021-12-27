@@ -1,6 +1,7 @@
 import { LoadSurveysUseCase } from '../../../../domain/useCases/LoadSurveysUseCase'
 import { Controller } from '../../../protocols'
 import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { serverError } from '../../../utils/http'
 
 class LoadSurveysController implements Controller<void> {
   constructor (
@@ -8,8 +9,12 @@ class LoadSurveysController implements Controller<void> {
   ) {}
 
   async handle (httpRequest: HttpRequest<void>): Promise<HttpResponse> {
-    await this.loadSurveysUseCase.load()
-    return null
+    try {
+      await this.loadSurveysUseCase.load()
+      return null
+    } catch (error) {
+      return serverError(error.message)
+    }
   }
 }
 
