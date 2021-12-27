@@ -24,4 +24,14 @@ describe('Survey Mongo Repository', () => {
     const survey = await sut().add(makeFakeSurvey())
     expect(survey).toHaveProperty('id')
   })
+
+  it('Should be able to find all surveys', async () => {
+    await Promise.all([
+      sut().add(makeFakeSurvey()),
+      sut().add(makeFakeSurvey())
+    ])
+
+    const surveys = await sut().all()
+    expect(surveys).toHaveLength(2)
+  })
 })
