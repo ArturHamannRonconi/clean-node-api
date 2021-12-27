@@ -1,6 +1,8 @@
 import { LoadSurveysController } from '.'
 import { Survey } from '../../../../domain/models'
 import { LoadSurveysResponseDTO, LoadSurveysUseCase } from '../../../../domain/useCases/LoadSurveysUseCase'
+import { StatusCode } from '../../../protocols/http'
+import { ServerError } from '../../../utils/errors'
 
 const makeFakeSurvey = (): Survey => ({
   id: 'any_id',
@@ -48,5 +50,19 @@ describe('Load Surveys Controller', () => {
 
     await sut.handle({})
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('Should returns 500 if LoadSurveysUseCase throws', async () => {
+    const { sut, loadSurveysUseCase } = makeSUT()
+    const response = new Error('any_message')
+    jest
+      .spyOn(loadSurveysUseCase, 'load')
+      .mockImplementation(async () => { throw response })
+
+    const httpResponse = await sut.handle({})
+
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
+    expect(httpResponse).toHaveProperty('body', new ServerError())
+    expect(httpResponse).toHaveProperty('description', response.message)
   })
 })
