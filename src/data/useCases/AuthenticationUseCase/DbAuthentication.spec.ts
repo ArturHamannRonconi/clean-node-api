@@ -3,6 +3,7 @@ import { Guid } from '../../../domain/protocols/Guid'
 import { DbAuthenticationUseCase } from './DbAuthenticationUseCase'
 import { Encrypter, FindAccountRepository, Authenticate, UpdateTokenRepository } from '../../protocols'
 import { AuthenticationRequestDTO, AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
+import { Role } from '../../../domain/protocols/Role'
 
 const makeFakeLogin = (): AuthenticationRequestDTO => ({
   email: 'any_email@mail.com',
@@ -13,13 +14,18 @@ const makeFakeAccount = (): Account => ({
   name: 'any_name',
   id: 'any_id',
   password: 'any_hash',
-  email: makeFakeLogin().email
+  email: makeFakeLogin().email,
+  role: Role.ADMIN
 })
 
 const makeFakeToken = (): string => 'any_token'
 
 const makeFindAccountRepository = (): FindAccountRepository => {
   class FindAccountRepositoryStub implements FindAccountRepository {
+    async byId (id: string): Promise<Account> {
+      return await new Promise(resolve => resolve(makeFakeAccount()))
+    }
+
     async byEmail (email: string): Promise<Account> {
       return await new Promise(resolve => resolve(makeFakeAccount()))
     }

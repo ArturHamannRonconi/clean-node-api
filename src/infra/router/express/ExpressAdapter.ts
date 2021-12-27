@@ -12,7 +12,7 @@ abstract class ExpressAdapter {
 
     if (resultResponse.headers && resultResponse?.headers.length > 0)
       resultResponse.headers.forEach(
-        ({ headerName, value }) => response.setHeader(headerName, value)
+        ({ name, value }) => response.setHeader(name, value)
       )
 
     return response

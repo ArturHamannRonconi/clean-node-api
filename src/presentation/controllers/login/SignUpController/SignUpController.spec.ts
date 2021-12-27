@@ -1,9 +1,10 @@
 import { SignUpController } from '.'
-import { StatusCode } from '../../protocols/http'
-import { EmailValidator, Validation } from '../../protocols/validators'
-import { AccountAlreadyExistsError, MissingParamError, ServerError } from '../../utils/errors'
-import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../domain/useCases/AddAccountUseCase'
-import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+import { StatusCode } from '../../../protocols/http'
+import { EmailValidator, Validation } from '../../../protocols/validators'
+import { AccountAlreadyExistsError, MissingParamError, ServerError } from '../../../utils/errors'
+import { AddAccountUseCase, AddAccountRequestDTO, AddAccountResponseDTO } from '../../../../domain/useCases/AddAccountUseCase'
+import { VerifyAccountExistsRequestDTO, VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
+import { Role } from '../../../../domain/protocols/Role'
 
 const makeVerifyAccountExistsUseCase = (): VerifyAccountExistsUseCase => {
   class VerifyAccountExistsStub implements VerifyAccountExistsUseCase {
@@ -104,7 +105,8 @@ describe('SignUp Controller', () => {
     expect(addAccountSpy).toHaveBeenCalledWith({
       email: 'any_email@mail.com',
       name: 'any_name',
-      password: 'any_password'
+      password: 'any_password',
+      role: Role.NORMAL
     })
   })
 
@@ -143,11 +145,6 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.CREATED)
-    expect(httpResponse).toHaveProperty('body', {
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@mail.com'
-    })
   })
 
   it('Should be able to return 409 if account already exists', async () => {
@@ -165,7 +162,9 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.CONFLICT)
-    expect(httpResponse).toHaveProperty('body', new AccountAlreadyExistsError())
+    expect(httpResponse.body).toHaveProperty('error',
+      new AccountAlreadyExistsError().message
+    )
   })
 
   it('Should call validation with correct value', async () => {
@@ -202,6 +201,8 @@ describe('SignUp Controller', () => {
     }
 
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toHaveProperty('body', new MissingParamError('email'))
+    expect(httpResponse.body).toHaveProperty('error',
+      new MissingParamError('email').message
+    )
   })
 })

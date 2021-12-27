@@ -1,3 +1,4 @@
+import { Role } from '../../../../../domain/protocols/Role'
 import { AddAccountRequestDTO } from '../../../../../domain/useCases/AddAccountUseCase/AddAccountRequestDTO'
 import { MongoHelperConnection } from '../helpers/MongoHelperConnection'
 import { AccountMongoRepository } from './AccountMongoRepository'
@@ -8,7 +9,8 @@ const makeSUT = (): AccountMongoRepository => new AccountMongoRepository()
 const makeFakeAccount = (): AddAccountRequestDTO => ({
   name: 'any_name',
   email: 'any_email@mail.com',
-  password: 'any_password'
+  password: 'any_password',
+  role: Role.NORMAL
 })
 
 describe('Account Mongo Repository', () => {
@@ -34,5 +36,14 @@ describe('Account Mongo Repository', () => {
     )
 
     expect(createdAccount.id).toBe(account.id)
+  })
+
+  it('Should be able to return an account by id', async () => {
+    const sut = makeSUT()
+    const fakeAccount = makeFakeAccount()
+    const { id } = await sut.add(fakeAccount)
+    const account = await sut.byId(id as string)
+
+    expect(account.email).toBe(fakeAccount.email)
   })
 })

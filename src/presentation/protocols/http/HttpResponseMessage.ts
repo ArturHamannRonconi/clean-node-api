@@ -2,7 +2,7 @@ import { StatusCode } from '.'
 
 interface HttpResponseMessage {
   statusCode: StatusCode
-  body: any
+  body?: any
   description?: string
 }
 

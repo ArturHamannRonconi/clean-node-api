@@ -1,8 +1,7 @@
-import { HttpResponseMessage, Json, StatusCode } from '../../protocols/http'
+import { HttpResponseMessage, StatusCode } from '../../protocols/http'
 
-const created = (data: Json): HttpResponseMessage => ({
-  statusCode: StatusCode.CREATED,
-  body: data
+const created = (): HttpResponseMessage => ({
+  statusCode: StatusCode.CREATED
 })
 
 export { created }

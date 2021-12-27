@@ -8,10 +8,20 @@ class TokenMongoRepository implements UpdateTokenRepository {
     const tokensCollection = await MongoHelperConnection
       .getCollection('tokens')
 
-    await tokensCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { accessToken: token } }
-    )
+    const _id = new ObjectId(id)
+    const accessToken = token
+
+    const tokenAlreadyExists = await tokensCollection.findOne(_id)
+
+    if (tokenAlreadyExists) {
+      await tokensCollection.updateOne(
+        { _id }, { $set: { accessToken } }
+      )
+    } else {
+      await tokensCollection.insertOne({
+        _id, accessToken
+      })
+    }
   }
 }
 

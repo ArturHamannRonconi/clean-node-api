@@ -1,9 +1,9 @@
-import { Controller } from '../../protocols/Controller'
-import { Validation } from '../../protocols/validators'
+import { Controller } from '../../../protocols/Controller'
+import { Validation } from '../../../protocols/validators'
 import { SignInHttpRequestBody } from './SignInHttpRequestBody'
-import { HttpRequest, HttpResponse } from '../../protocols/http'
-import { badRequest, serverError, success, unautorized } from '../../utils/http'
-import { AuthenticationUseCase } from '../../../domain/useCases/AuthenticationUseCase'
+import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { badRequest, serverError, success, unautorized } from '../../../utils/http'
+import { AuthenticationUseCase } from '../../../../domain/useCases/AuthenticationUseCase'
 
 class SignInController implements Controller<SignInHttpRequestBody> {
   constructor (
@@ -16,7 +16,7 @@ class SignInController implements Controller<SignInHttpRequestBody> {
       const { email, password } = httpRequest.body
 
       const error = await this.validation
-        .validate({ ...httpRequest.body })
+        .validate(httpRequest.body)
       if (error) return badRequest(error)
 
       const token = await this
@@ -24,9 +24,9 @@ class SignInController implements Controller<SignInHttpRequestBody> {
         .auth({ email, password })
       if (!token) return unautorized()
 
-      return success({ ...token })
+      return success(token)
     } catch (error) {
-      return serverError(error)
+      return serverError(error.message)
     }
   }
 }

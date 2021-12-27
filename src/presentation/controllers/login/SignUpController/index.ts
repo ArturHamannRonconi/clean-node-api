@@ -1,14 +1,15 @@
-import { AccountAlreadyExistsError } from '../../utils/errors'
-import { badRequest, serverError, created, conflict } from '../../utils/http'
+import { AccountAlreadyExistsError } from '../../../utils/errors'
+import { badRequest, serverError, created, conflict } from '../../../utils/http'
 
-import { AddAccountUseCase } from '../../../domain/useCases/AddAccountUseCase'
-import { VerifyAccountExistsUseCase } from '../../../domain/useCases/VerifyAccountExistsUseCase'
+import { AddAccountUseCase } from '../../../../domain/useCases/AddAccountUseCase'
+import { VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
 
 import { SignUpHttpRequestBody } from './SignUpHttpRequestBody'
-import { Controller } from '../../protocols/Controller'
+import { Controller } from '../../../protocols/Controller'
 
-import { Validation } from '../../protocols/validators'
-import { HttpRequest, HttpResponse } from '../../protocols/http'
+import { Validation } from '../../../protocols/validators'
+import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { Role } from '../../../../domain/protocols/Role'
 
 class SignUpController implements Controller<SignUpHttpRequestBody> {
   constructor (
@@ -22,7 +23,7 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
       const { email, password, name } = httpRequest.body
 
       const error = await this.validation
-        .validate({ ...httpRequest.body })
+        .validate(httpRequest.body)
       if (error) return badRequest(error)
 
       const accountAlreadyExists = await this
@@ -32,10 +33,10 @@ class SignUpController implements Controller<SignUpHttpRequestBody> {
       if (accountAlreadyExists)
         return conflict(new AccountAlreadyExistsError())
 
-      const accountData = await this.addAccountUseCase
-        .add({ email, name, password })
+      await this.addAccountUseCase
+        .add({ email, name, password, role: Role.NORMAL })
 
-      return created({ ...accountData })
+      return created()
     } catch (error) {
       return serverError(error.message)
     }
