@@ -48,8 +48,18 @@ describe('Load Surveys Controller', () => {
     const { sut, loadSurveysUseCase } = makeSUT()
     const loadSpy = jest.spyOn(loadSurveysUseCase, 'load')
 
-    await sut.handle({})
+    await sut.handle()
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('Should return 200 on success', async () => {
+    const { sut } = makeSUT()
+    const httpResponse = await sut.handle()
+    expect(httpResponse).toHaveProperty(
+      'statusCode',
+      StatusCode.SUCCESS
+    )
+    expect(httpResponse.body).toHaveProperty('surveys')
   })
 
   it('Should returns 500 if LoadSurveysUseCase throws', async () => {
@@ -59,7 +69,7 @@ describe('Load Surveys Controller', () => {
       .spyOn(loadSurveysUseCase, 'load')
       .mockImplementation(async () => { throw response })
 
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle()
 
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
     expect(httpResponse).toHaveProperty('body', new ServerError())
