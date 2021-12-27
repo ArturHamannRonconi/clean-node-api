@@ -58,4 +58,11 @@ describe('Db Load Survey Use Case', () => {
     const error = sut.load()
     await expect(error).rejects.toThrow()
   })
+
+  it('Should return an array with surveys', async () => {
+    const { sut } = makeSUT()
+
+    const surveysBox = await sut.load()
+    expect(surveysBox).toHaveProperty('surveys')
+  })
 })
