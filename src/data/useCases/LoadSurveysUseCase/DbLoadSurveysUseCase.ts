@@ -7,8 +7,8 @@ class DbLoadSurveysUseCase implements LoadSurveysUseCase {
   ) {}
 
   async load (): Promise<LoadSurveysResponseDTO> {
-    await this.findSurveyRepository.all()
-    return null
+    const surveys = await this.findSurveyRepository.all()
+    return { surveys }
   }
 }
 
