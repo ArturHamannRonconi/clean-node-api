@@ -1,17 +1,19 @@
 import { LoadSurveysUseCase } from '../../../../domain/useCases/LoadSurveysUseCase'
 import { Controller } from '../../../protocols'
-import { HttpRequest, HttpResponse } from '../../../protocols/http'
-import { serverError } from '../../../utils/http'
+import { HttpResponse } from '../../../protocols/http'
+import { serverError, success } from '../../../utils/http'
+import { noContent } from '../../../utils/http/noContent'
 
 class LoadSurveysController implements Controller<void> {
   constructor (
     private readonly loadSurveysUseCase: LoadSurveysUseCase
   ) {}
 
-  async handle (httpRequest: HttpRequest<void>): Promise<HttpResponse> {
+  async handle (): Promise<HttpResponse> {
     try {
-      await this.loadSurveysUseCase.load()
-      return null
+      const surveysBox = await this.loadSurveysUseCase.load()
+
+      return success(surveysBox)
     } catch (error) {
       return serverError(error.message)
     }
