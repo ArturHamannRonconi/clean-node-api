@@ -13,7 +13,9 @@ class LoadSurveysController implements Controller<void> {
     try {
       const surveysBox = await this.loadSurveysUseCase.load()
 
-      return success(surveysBox)
+      return surveysBox.surveys.length
+        ? success(surveysBox)
+        : noContent()
     } catch (error) {
       return serverError(error.message)
     }
