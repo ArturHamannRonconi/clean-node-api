@@ -48,4 +48,14 @@ describe('Db Load Survey Use Case', () => {
     await sut.load()
     expect(allSpy).toHaveBeenCalled()
   })
+
+  it('Should be throws if FindSurveyRepository trows', async () => {
+    const { sut, findSurveyRepository } = makeSUT()
+    jest
+      .spyOn(findSurveyRepository, 'all')
+      .mockImplementationOnce(async () => { throw new Error() })
+
+    const error = sut.load()
+    await expect(error).rejects.toThrow()
+  })
 })
