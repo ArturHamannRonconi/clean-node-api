@@ -62,6 +62,21 @@ describe('Load Surveys Controller', () => {
     expect(httpResponse.body).toHaveProperty('surveys')
   })
 
+  it('Should return 204 if no has surveys', async () => {
+    const { sut, loadSurveysUseCase } = makeSUT()
+    jest
+      .spyOn(loadSurveysUseCase, 'load')
+      .mockReturnValueOnce(new Promise(
+        resolve => resolve({ surveys: [] })
+      ))
+
+    const httpResponse = await sut.handle()
+    expect(httpResponse).toHaveProperty(
+      'statusCode',
+      StatusCode.NO_CONTENT
+    )
+  })
+
   it('Should returns 500 if LoadSurveysUseCase throws', async () => {
     const { sut, loadSurveysUseCase } = makeSUT()
     const response = new Error('any_message')
