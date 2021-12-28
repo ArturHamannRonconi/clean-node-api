@@ -7,8 +7,11 @@ class DbLoadSurveyByIdUseCase implements LoadSurveyByIdUseCase {
   ) {}
 
   async load ({ surveyId }: LoadSurveyByIdRequestDTO): Promise<LoadSurveyByIdResponseDTO> {
-    await this.findSurveyRepository.byId(surveyId)
-    return null
+    const surveyExists = await this.findSurveyRepository.byId(surveyId)
+
+    if (!surveyExists) return null
+
+    return { survey: surveyExists }
   }
 }
 
