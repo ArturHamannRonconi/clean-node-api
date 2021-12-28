@@ -1,0 +1,5 @@
+interface AddSurveyResultHttpRequestBody {
+  
+}
+
+export { AddSurveyResultHttpRequestBody }

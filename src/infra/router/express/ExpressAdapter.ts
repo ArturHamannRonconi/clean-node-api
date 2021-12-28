@@ -4,6 +4,7 @@ import { Controller } from '../../../presentation/protocols'
 abstract class ExpressAdapter {
   static async transformToExpressRequest<T>(request: Request, response: Response, factory: () => Controller<T>): Promise<Response> {
     const httpRequest = {
+      params: request.params,
       body: request.body,
       headers: request.headers
     }

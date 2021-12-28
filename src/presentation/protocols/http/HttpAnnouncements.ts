@@ -1,7 +1,8 @@
 import { Header, Json } from '.'
 
-interface HttpRequest<T> {
-  body?: T
+interface HttpRequest<B> {
+  body?: B
+  params?: any
   headers?: Json
 }
 
