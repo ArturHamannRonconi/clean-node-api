@@ -1,0 +1,48 @@
+import { Guid } from '../../../domain/protocols/Guid'
+import { SaveSurveyResultUseCase } from '../../../domain/useCases/SaveSurveyResultUseCase'
+import { SaveSurveyResultRepository } from '../../protocols/repositories/SurveyResultRepository/SaveSurveyResultRepository'
+import { SaveSurveuResultRepositoryRequestDTO } from '../../protocols/repositories/SurveyResultRepository/SaveSurveyResultRepositoryRequestDTO'
+import { DbSaveSurveyResultUseCase } from './DbSaveSurveyResultUseCase'
+
+const makeFakeSurveyResult = (): SaveSurveuResultRepositoryRequestDTO => ({
+  accountId: 'any_account_id',
+  answer: 'any_answer',
+  surveyId: 'any_survey_id'
+})
+
+const makeSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
+  class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
+    async save (surveyResult: SaveSurveuResultRepositoryRequestDTO): Promise<Guid> {
+      return await new Promise(resolve => resolve('any_id'))
+    }
+  }
+
+  return new SaveSurveyResultRepositoryStub()
+}
+
+interface SutTypes {
+  sut: SaveSurveyResultUseCase
+  saveSurveyResultRepository: SaveSurveyResultRepository
+}
+
+const makeSUT = (): SutTypes => {
+  const saveSurveyResultRepository = makeSaveSurveyResultRepository()
+  const sut = new DbSaveSurveyResultUseCase(
+    saveSurveyResultRepository
+  )
+
+  return {
+    sut,
+    saveSurveyResultRepository
+  }
+}
+
+describe('Db Save Survey Result Use Case', () => {
+  it('Should to call SaveSurveyResultRepository', async () => {
+    const { sut, saveSurveyResultRepository } = makeSUT()
+    const saveSpy = jest.spyOn(saveSurveyResultRepository, 'save')
+
+    await sut.save(makeFakeSurveyResult())
+    expect(saveSpy).toHaveBeenCalledWith(makeFakeSurveyResult())
+  })
+})
