@@ -75,4 +75,14 @@ describe('Db Load By Id Use Case', () => {
     )
     expect(nullable).toBeNull()
   })
+
+  it('Should return survey if FindSurveyRepository return survey', async () => {
+    const { sut } = makeSUT()
+
+    const survey = await sut.load(
+      { surveyId: makeFakeSurvey().id }
+    )
+
+    expect(survey).toHaveProperty('survey', makeFakeSurvey())
+  })
 })
