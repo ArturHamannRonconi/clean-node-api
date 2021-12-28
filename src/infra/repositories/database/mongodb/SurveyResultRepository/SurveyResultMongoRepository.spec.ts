@@ -26,6 +26,16 @@ describe('Survey Result Repository', () => {
   })
 
   it('Should update if SurveyResult already exists', async () => {
+    await sut().save(makeFakeSurveyResult())
+
+    const guid = sut().save({
+      ...makeFakeSurveyResult(),
+      answer: 'any_answer_2'
+    })
+    expect(guid).toBeTruthy()
+  })
+
+  it('Should update if SurveyResult already exists', async () => {
     const guid1 = await sut().save(makeFakeSurveyResult())
 
     const guid2 = await sut().save({
