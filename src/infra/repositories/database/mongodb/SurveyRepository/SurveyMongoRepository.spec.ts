@@ -34,4 +34,18 @@ describe('Survey Mongo Repository', () => {
     const surveys = await sut().all()
     expect(surveys).toHaveLength(2)
   })
+
+  it('Should be able to find survey by id', async () => {
+    await sut().add(makeFakeSurvey())
+
+    const surveys = await sut().all()
+    const surveyId = surveys.reduce(
+      (acc, survey) => acc = `${survey.id}`, ''
+    )
+
+    const survey = await sut().byId(surveyId)
+    expect(survey).toHaveProperty('answers', makeFakeSurvey().answers)
+    expect(survey).toHaveProperty('question', makeFakeSurvey().question)
+    expect(survey).toHaveProperty('ownerId', makeFakeSurvey().ownerId)
+  })
 })
