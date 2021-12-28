@@ -14,7 +14,7 @@ class SurveyResultMongoRepository implements SaveSurveyResultRepository {
       { upsert: true, returnDocument: 'after' }
     )
 
-    return survey._id
+    return survey._id.toString()
   }
 }
 

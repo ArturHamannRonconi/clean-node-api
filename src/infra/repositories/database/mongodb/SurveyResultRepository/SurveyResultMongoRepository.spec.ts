@@ -10,16 +10,7 @@ const makeFakeSurveyResult = (): SaveSurveuResultRepositoryRequestDTO => ({
   surveyId: 'any_survey_id'
 })
 
-interface SutTypes {
-  sut: SurveyResultMongoRepository
-}
-
-const makeSUT = (): SutTypes => {
-  const sut = new SurveyResultMongoRepository()
-  return {
-    sut
-  }
-}
+const sut = (): SurveyResultMongoRepository => new SurveyResultMongoRepository()
 
 describe('Survey Result Repository', () => {
   beforeAll(async () => await MongoHelperConnection.connect(MONGO_URL))
@@ -30,8 +21,18 @@ describe('Survey Result Repository', () => {
   )
 
   it('Should insert if SurveyResult not exists', async () => {
-    const { sut } = makeSUT()
-    const guid = await sut.save(makeFakeSurveyResult())
+    const guid = await sut().save(makeFakeSurveyResult())
     expect(guid).toBeTruthy()
+  })
+
+  it('Should update if SurveyResult already exists', async () => {
+    const guid1 = await sut().save(makeFakeSurveyResult())
+
+    const guid2 = await sut().save({
+      ...makeFakeSurveyResult(),
+      answer: 'any_answer_2'
+    })
+    expect(guid2).toBeTruthy()
+    expect(guid2).toEqual(guid1)
   })
 })
