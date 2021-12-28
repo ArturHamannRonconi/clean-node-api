@@ -61,4 +61,18 @@ describe('Db Load By Id Use Case', () => {
     const error = sut.load({ surveyId: makeFakeSurvey().id })
     await expect(error).rejects.toThrow()
   })
+
+  it('Should return null if FindSurveyRepository return null', async () => {
+    const { sut, findSurveyRepository } = makeSUT()
+    jest
+      .spyOn(findSurveyRepository, 'byId')
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(null))
+      )
+
+    const nullable = await sut.load(
+      { surveyId: makeFakeSurvey().id }
+    )
+    expect(nullable).toBeNull()
+  })
 })
