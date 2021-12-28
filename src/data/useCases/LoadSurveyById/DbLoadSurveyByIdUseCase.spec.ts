@@ -1,4 +1,5 @@
 import { Survey } from '../../../domain/models'
+
 import { LoadSurveyByIdUseCase } from '../../../domain/useCases/LoadSurveyByIdUseCase'
 import { FindSurveyRepository } from '../../protocols/repositories/SurveyRepository/FindSurveyRepository'
 import { DbLoadSurveyByIdUseCase } from '../LoadSurveyById/DbLoadSurveyByIdUseCase'
@@ -47,9 +48,17 @@ describe('Db Load By Id Use Case', () => {
   it('Should calls a FindSurveyRepository with correct values', async () => {
     const { sut, findSurveyRepository } = makeSUT()
     const allSpy = jest.spyOn(findSurveyRepository, 'byId')
-    const surveyId = 'any_id'
+    await sut.load({ surveyId: makeFakeSurvey().id })
+    expect(allSpy).toHaveBeenCalledWith(makeFakeSurvey().id)
+  })
 
-    await sut.load({ surveyId })
-    expect(allSpy).toHaveBeenCalledWith(surveyId)
+  it('Should be throws if FindSurveyRepository trows', async () => {
+    const { sut, findSurveyRepository } = makeSUT()
+    jest
+      .spyOn(findSurveyRepository, 'byId')
+      .mockImplementationOnce(async () => { throw new Error() })
+
+    const error = sut.load({ surveyId: makeFakeSurvey().id })
+    await expect(error).rejects.toThrow()
   })
 })
