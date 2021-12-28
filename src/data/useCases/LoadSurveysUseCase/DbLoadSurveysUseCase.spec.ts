@@ -1,4 +1,5 @@
 import { Survey } from '../../../domain/models'
+import { Guid } from '../../../domain/protocols/Guid'
 import { FindSurveyRepository } from '../../protocols/repositories/SurveyRepository/FindSurveyRepository'
 import { DbLoadSurveysUseCase } from '../LoadSurveysUseCase/DbLoadSurveysUseCase'
 
@@ -13,6 +14,7 @@ const makeFakeSurvey = (): Survey => ({
 
 const makeFindSurveyRepository = (): FindSurveyRepository => {
   class FindSurveyRepositoryStub implements FindSurveyRepository {
+    byId: (surveyId: Guid) => Promise<Survey>
     async all (): Promise<Survey[]> {
       return await new Promise(
         resolve => resolve([makeFakeSurvey()])
