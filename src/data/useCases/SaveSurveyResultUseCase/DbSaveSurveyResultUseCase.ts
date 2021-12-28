@@ -7,8 +7,11 @@ class DbSaveSurveyResultUseCase implements SaveSurveyResultUseCase {
   ) {}
 
   async save (surveyResult: SaveSurveyResultRequestDTO): Promise<SaveSurveyResultResponseDTO> {
-    await this.saveSurveyResultRepository.save(surveyResult)
-    return null
+    const surveyResultId = await this.saveSurveyResultRepository.save(surveyResult)
+
+    if (!surveyResultId) return null
+
+    return { surveyResultId }
   }
 }
 

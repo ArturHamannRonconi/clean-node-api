@@ -67,4 +67,11 @@ describe('Db Save Survey Result Use Case', () => {
     const nullable = await sut.save(makeFakeSurveyResult())
     expect(nullable).toBeNull()
   })
+
+  it('Should return a Guid if SaveSurveyResultRepository return a Guid', async () => {
+    const { sut } = makeSUT()
+
+    const guid = await sut.save(makeFakeSurveyResult())
+    expect(guid).toHaveProperty('surveyResultId', 'any_id')
+  })
 })
