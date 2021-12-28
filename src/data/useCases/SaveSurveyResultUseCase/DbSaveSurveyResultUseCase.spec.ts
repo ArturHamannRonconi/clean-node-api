@@ -55,4 +55,16 @@ describe('Db Save Survey Result Use Case', () => {
     const error = sut.save(makeFakeSurveyResult())
     await expect(error).rejects.toThrow()
   })
+
+  it('Should return null if SaveSurveyResultRepository return null', async () => {
+    const { sut, saveSurveyResultRepository } = makeSUT()
+    jest
+      .spyOn(saveSurveyResultRepository, 'save')
+      .mockReturnValueOnce(new Promise(
+        resolve => resolve(null)
+      ))
+
+    const nullable = await sut.save(makeFakeSurveyResult())
+    expect(nullable).toBeNull()
+  })
 })
