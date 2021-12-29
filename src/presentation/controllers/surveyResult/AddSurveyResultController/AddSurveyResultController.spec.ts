@@ -132,4 +132,16 @@ describe('Add Survey Result Controller', () => {
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
     expect(httpResponse).toHaveProperty('body', new ServerError())
   })
+
+  it('Should call SaveSurveyResultUseCase with correct values', async () => {
+    const { sut, saveSurveyResultUseCase } = makeSUT()
+    const saveSpy = jest.spyOn(saveSurveyResultUseCase, 'save')
+
+    await sut.handle(makeFakeHttpRequest())
+    expect(saveSpy).toHaveBeenCalledWith({
+      accountId: makeFakeHttpRequest().body.accountId,
+      answer: makeFakeHttpRequest().body.answer,
+      surveyId: makeFakeHttpRequest().params.survey_id
+    })
+  })
 })
