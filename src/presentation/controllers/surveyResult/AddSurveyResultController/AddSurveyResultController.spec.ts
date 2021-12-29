@@ -4,6 +4,7 @@ import { LoadSurveyByIdRequestDTO, LoadSurveyByIdResponseDTO, LoadSurveyByIdUseC
 import { HttpRequest, StatusCode } from '../../../protocols/http'
 import { AddSurveyResultHttpRequestBody } from './AddSurveyResultHttpRequestBody'
 import { InvalidParamError, ServerError } from '../../../utils/errors'
+import { SaveSurveyResultRequestDTO, SaveSurveyResultResponseDTO, SaveSurveyResultUseCase } from '../../../../domain/useCases/SaveSurveyResultUseCase'
 
 const makeFakeSurvey = (): Survey => ({
   id: 'any_survey_id',
@@ -34,20 +35,36 @@ const makeloadSurveyByIdUseCase = (): LoadSurveyByIdUseCase => {
   return new LoadSurveyByIdUseCaseStub()
 }
 
+const makeSaveSurveyResultUseCase = (): SaveSurveyResultUseCase => {
+  class SaveSurveyResultUseCaseStub implements SaveSurveyResultUseCase {
+    async save (surveyResult: SaveSurveyResultRequestDTO): Promise<SaveSurveyResultResponseDTO> {
+      return await new Promise(
+        resolve => resolve({ surveyResultId: 'any_survey_result' })
+      )
+    }
+  }
+
+  return new SaveSurveyResultUseCaseStub()
+}
+
 interface SutTypes {
   sut: AddSurveyResultController
   loadSurveyByIdUseCase: LoadSurveyByIdUseCase
+  saveSurveyResultUseCase: SaveSurveyResultUseCase
 }
 
 const makeSUT = (): SutTypes => {
   const loadSurveyByIdUseCase = makeloadSurveyByIdUseCase()
+  const saveSurveyResultUseCase = makeSaveSurveyResultUseCase()
   const sut = new AddSurveyResultController(
-    loadSurveyByIdUseCase
+    loadSurveyByIdUseCase,
+    saveSurveyResultUseCase
   )
 
   return {
     sut,
-    loadSurveyByIdUseCase
+    loadSurveyByIdUseCase,
+    saveSurveyResultUseCase
   }
 }
 
@@ -97,6 +114,18 @@ describe('Add Survey Result Controller', () => {
 
     jest
       .spyOn(loadSurveyByIdUseCase, 'load')
+      .mockImplementationOnce(async () => { throw new Error() })
+
+    const httpResponse = await sut.handle(makeFakeHttpRequest())
+    expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
+    expect(httpResponse).toHaveProperty('body', new ServerError())
+  })
+
+  it('Should return 500 if SaveSurveyResultUseCase throws', async () => {
+    const { sut, saveSurveyResultUseCase } = makeSUT()
+
+    jest
+      .spyOn(saveSurveyResultUseCase, 'save')
       .mockImplementationOnce(async () => { throw new Error() })
 
     const httpResponse = await sut.handle(makeFakeHttpRequest())
