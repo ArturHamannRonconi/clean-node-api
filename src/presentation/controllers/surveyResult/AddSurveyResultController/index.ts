@@ -1,14 +1,16 @@
-import { LoadSurveyByIdUseCase } from '../../../../domain/useCases/LoadSurveyByIdUseCase'
 import { Controller } from '../../../protocols'
-import { HttpRequest, HttpResponse } from '../../../protocols/http'
-import { InvalidParamError } from '../../../utils/errors'
-import { serverError } from '../../../utils/http'
+import { created, serverError } from '../../../utils/http'
 import { forbidden } from '../../../utils/http/forbidden'
+import { InvalidParamError } from '../../../utils/errors'
+import { HttpRequest, HttpResponse } from '../../../protocols/http'
 import { AddSurveyResultHttpRequestBody } from './AddSurveyResultHttpRequestBody'
+import { LoadSurveyByIdUseCase } from '../../../../domain/useCases/LoadSurveyByIdUseCase'
+import { SaveSurveyResultUseCase } from '../../../../domain/useCases/SaveSurveyResultUseCase'
 
 class AddSurveyResultController implements Controller<AddSurveyResultHttpRequestBody> {
   constructor (
-    private readonly loadSurveyByIdUseCase: LoadSurveyByIdUseCase
+    private readonly loadSurveyByIdUseCase: LoadSurveyByIdUseCase,
+    private readonly saveSurveyResultUseCase: SaveSurveyResultUseCase
   ) {}
 
   async handle (httpRequest: HttpRequest<AddSurveyResultHttpRequestBody>): Promise<HttpResponse> {
@@ -27,7 +29,11 @@ class AddSurveyResultController implements Controller<AddSurveyResultHttpRequest
       if (!answerExists)
         return forbidden(new InvalidParamError('answer'))
 
-      return null
+      await this.saveSurveyResultUseCase.save(
+        { accountId, answer, surveyId }
+      )
+
+      return created()
     } catch (error) {
       return serverError(error.message)
     }
