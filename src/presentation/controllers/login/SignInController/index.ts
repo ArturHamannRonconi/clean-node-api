@@ -1,22 +1,21 @@
 import { Controller } from '../../../protocols/Controller'
 import { Validation } from '../../../protocols/validators'
-import { SignInHttpRequestBody } from './SignInHttpRequestBody'
-import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { SignInRequest } from './SignInRequest'
+import { HttpResponse } from '../../../protocols/http'
 import { badRequest, serverError, success, unautorized } from '../../../utils/http'
 import { AuthenticationUseCase } from '../../../../domain/useCases/AuthenticationUseCase'
 
-class SignInController implements Controller<SignInHttpRequestBody> {
+class SignInController implements Controller<SignInRequest> {
   constructor (
     private readonly validation: Validation,
     private readonly authenticationUseCase: AuthenticationUseCase
   ) { }
 
-  async handle (httpRequest: HttpRequest<SignInHttpRequestBody>): Promise<HttpResponse> {
+  async handle (request: SignInRequest): Promise<HttpResponse> {
     try {
-      const { email, password } = httpRequest.body
+      const { email, password } = request
 
-      const error = await this.validation
-        .validate(httpRequest.body)
+      const error = await this.validation.validate(request)
       if (error) return badRequest(error)
 
       const token = await this

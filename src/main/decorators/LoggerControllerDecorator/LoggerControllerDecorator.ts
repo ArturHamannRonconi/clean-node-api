@@ -1,6 +1,6 @@
 import { Controller } from '../../../presentation/protocols'
 import { LoggerRepository } from '../../../data/protocols/repositories/LoggerRepository'
-import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
+import { HttpResponse } from '../../../presentation/protocols/http'
 
 class LoggerControllerDecorator<T> implements Controller<T> {
   constructor (
@@ -8,7 +8,7 @@ class LoggerControllerDecorator<T> implements Controller<T> {
     private readonly loggerRepository: LoggerRepository
   ) { }
 
-  async handle (httpRequest: HttpRequest<T>): Promise<HttpResponse> {
+  async handle (httpRequest: T): Promise<HttpResponse> {
     const httpResponse = await this.controller.handle(httpRequest)
 
     if (httpResponse.message)

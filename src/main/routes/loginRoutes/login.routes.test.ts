@@ -2,11 +2,11 @@ import request from 'supertest'
 
 import { app } from '../../app'
 import { MongoHelperConnection } from '../../../infra/repositories/database/mongodb/helpers/MongoHelperConnection'
-import { SignUpHttpRequestBody } from '../../../presentation/controllers/login/SignUpController/SignUpHttpRequestBody'
+import { SignUpRequest } from '../../../presentation/controllers/login/SignUpController/SignUpRequest'
 
 const { MONGO_URL } = process.env
 
-const fakeAccount = (): SignUpHttpRequestBody => ({
+const fakeAccount = (): SignUpRequest => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'a44638qewq92!A',

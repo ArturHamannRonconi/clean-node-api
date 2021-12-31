@@ -1,23 +1,21 @@
 import { Controller } from '../../../presentation/protocols'
 import { loggerDecoratorFactory } from '../decorators/LoggerDecoratorFactory'
-import { AddSurveyHttpRequestBody } from '../../../presentation/controllers/survey/AddSurveyController/AddSurveyHttpRequestBody'
+import { AddSurveyRequest } from '../../../presentation/controllers/survey/AddSurveyController/AddSurveyRequest'
 import { addSurveyUseCaseFactory } from '../useCases/AddSurveyUseCaseFactory'
 import { AddSurveyController } from '../../../presentation/controllers/survey/AddSurveyController'
 import { ValidationComposite } from '../../../infra/validators/ValidationComposite'
 import { RequiredFieldsValidatorAdapter } from '../../../infra/validators/RequiredFieldsValidatorAdapter'
 
-const addSurveyControllerFactory = (): Controller<AddSurveyHttpRequestBody> => {
+const addSurveyControllerFactory = (): Controller<AddSurveyRequest> => {
   const validation = new ValidationComposite([
-    new RequiredFieldsValidatorAdapter([
-      'question', 'answers'
-    ])
+    new RequiredFieldsValidatorAdapter(['question', 'answers'])
   ])
   const addSurveyController = new AddSurveyController(
     validation,
     addSurveyUseCaseFactory()
   )
 
-  return loggerDecoratorFactory<AddSurveyHttpRequestBody>(addSurveyController)
+  return loggerDecoratorFactory<AddSurveyRequest>(addSurveyController)
 }
 
 export { addSurveyControllerFactory }

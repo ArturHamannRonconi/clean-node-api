@@ -1,12 +1,14 @@
 import { Request, Response } from 'express'
-import { ExpressAdapter } from './ExpressAdapter'
+import { RouterAdapter } from '../RouterAdapter'
 import { signUpFactory } from '../../../main/factories/controllers/SignUpControllerFactory'
-import { SignUpHttpRequestBody } from '../../../presentation/controllers/login/SignUpController/SignUpHttpRequestBody'
+import { SignUpRequest } from '../../../presentation/controllers/login/SignUpController/SignUpRequest'
 
 class SignUpControllerExpressdapter {
   static async handle (request: Request, response: Response): Promise<Response> {
-    return await ExpressAdapter.transformToExpressRequest<SignUpHttpRequestBody>(
-      request,
+    const { email, name, password, passwordConfirmation } = request.body
+
+    return await RouterAdapter.getExpressResponse<SignUpRequest>(
+      { email, name, password, passwordConfirmation },
       response,
       signUpFactory
     )

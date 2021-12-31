@@ -1,8 +1,9 @@
 import { Guid } from '../../../../domain/protocols/Guid'
 
-interface AddSurveyResultHttpRequestBody {
+interface AddSurveyResultRequest {
+  surveyId: Guid
   answer: string
   accountId: Guid
 }
 
-export { AddSurveyResultHttpRequestBody }
+export { AddSurveyResultRequest }

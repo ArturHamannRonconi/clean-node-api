@@ -2,22 +2,20 @@ import { Controller } from '../../../protocols'
 import { created, serverError } from '../../../utils/http'
 import { forbidden } from '../../../utils/http/forbidden'
 import { InvalidParamError } from '../../../utils/errors'
-import { HttpRequest, HttpResponse } from '../../../protocols/http'
-import { AddSurveyResultHttpRequestBody } from './AddSurveyResultHttpRequestBody'
+import { HttpResponse } from '../../../protocols/http'
+import { AddSurveyResultRequest } from './AddSurveyResultRequest'
 import { LoadSurveyByIdUseCase } from '../../../../domain/useCases/LoadSurveyByIdUseCase'
 import { SaveSurveyResultUseCase } from '../../../../domain/useCases/SaveSurveyResultUseCase'
 
-class AddSurveyResultController implements Controller<AddSurveyResultHttpRequestBody> {
+class AddSurveyResultController implements Controller<AddSurveyResultRequest> {
   constructor (
     private readonly loadSurveyByIdUseCase: LoadSurveyByIdUseCase,
     private readonly saveSurveyResultUseCase: SaveSurveyResultUseCase
   ) {}
 
-  async handle (httpRequest: HttpRequest<AddSurveyResultHttpRequestBody>): Promise<HttpResponse> {
+  async handle (request: AddSurveyResultRequest): Promise<HttpResponse> {
     try {
-      const { survey_id: surveyId } = httpRequest.params
-      const { answer, accountId } = httpRequest.body
-
+      const { surveyId, answer, accountId } = request
       const surveyExists = await this.loadSurveyByIdUseCase.load({ surveyId })
 
       if (!surveyExists)

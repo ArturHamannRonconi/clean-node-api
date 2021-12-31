@@ -1,14 +1,14 @@
 import { join } from 'path'
 import { rm } from 'fs/promises'
 
-import { HttpRequest, HttpResponse } from '../../../presentation/protocols/http'
+import { HttpResponse } from '../../../presentation/protocols/http'
 import { LoggerControllerDecorator } from './LoggerControllerDecorator'
 import { LoggerRepository } from '../../../data/protocols/repositories/LoggerRepository'
 import { Controller } from '../../../presentation/protocols'
 
 const makeGenericController = (): Controller<any> => {
   class GenericController implements Controller<any> {
-    async handle (httpRequest: HttpRequest<any>): Promise<HttpResponse> {
+    async handle (httpRequest: any): Promise<HttpResponse> {
       const httpResponse = {
         body: { ok: 'ok' },
         statusCode: 200,

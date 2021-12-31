@@ -4,26 +4,25 @@ import { badRequest, serverError, created, conflict } from '../../../utils/http'
 import { AddAccountUseCase } from '../../../../domain/useCases/AddAccountUseCase'
 import { VerifyAccountExistsUseCase } from '../../../../domain/useCases/VerifyAccountExistsUseCase'
 
-import { SignUpHttpRequestBody } from './SignUpHttpRequestBody'
+import { SignUpRequest } from './SignUpRequest'
 import { Controller } from '../../../protocols/Controller'
 
 import { Validation } from '../../../protocols/validators'
-import { HttpRequest, HttpResponse } from '../../../protocols/http'
+import { HttpResponse } from '../../../protocols/http'
 import { Role } from '../../../../domain/protocols/Role'
 
-class SignUpController implements Controller<SignUpHttpRequestBody> {
+class SignUpController implements Controller<SignUpRequest> {
   constructor (
     private readonly addAccountUseCase: AddAccountUseCase,
     private readonly verifyAccountExistsUseCase: VerifyAccountExistsUseCase,
     private readonly validation: Validation
   ) { }
 
-  async handle (httpRequest: HttpRequest<SignUpHttpRequestBody>): Promise<HttpResponse> {
+  async handle (request: SignUpRequest): Promise<HttpResponse> {
     try {
-      const { email, password, name } = httpRequest.body
+      const { email, password, name } = request
 
-      const error = await this.validation
-        .validate(httpRequest.body)
+      const error = await this.validation.validate(request)
       if (error) return badRequest(error)
 
       const accountAlreadyExists = await this

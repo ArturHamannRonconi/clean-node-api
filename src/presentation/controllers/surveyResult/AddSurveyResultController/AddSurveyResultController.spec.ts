@@ -1,8 +1,8 @@
 import { AddSurveyResultController } from '.'
 import { Survey } from '../../../../domain/models'
 import { LoadSurveyByIdRequestDTO, LoadSurveyByIdResponseDTO, LoadSurveyByIdUseCase } from '../../../../domain/useCases/LoadSurveyByIdUseCase'
-import { HttpRequest, StatusCode } from '../../../protocols/http'
-import { AddSurveyResultHttpRequestBody } from './AddSurveyResultHttpRequestBody'
+import { StatusCode } from '../../../protocols/http'
+import { AddSurveyResultRequest } from './AddSurveyResultRequest'
 import { InvalidParamError, ServerError } from '../../../utils/errors'
 import { SaveSurveyResultRequestDTO, SaveSurveyResultResponseDTO, SaveSurveyResultUseCase } from '../../../../domain/useCases/SaveSurveyResultUseCase'
 
@@ -15,12 +15,10 @@ const makeFakeSurvey = (): Survey => ({
   ]
 })
 
-const makeFakeHttpRequest = (): HttpRequest<AddSurveyResultHttpRequestBody> => ({
-  params: { survey_id: 'any_survey_id' },
-  body: {
-    accountId: 'any_account_id',
-    answer: 'any_answer'
-  }
+const makeFakeHttpRequest = (): AddSurveyResultRequest => ({
+  surveyId: 'any_survey_id',
+  accountId: 'any_account_id',
+  answer: 'any_answer'
 })
 
 const makeloadSurveyByIdUseCase = (): LoadSurveyByIdUseCase => {
@@ -72,11 +70,10 @@ describe('Add Survey Result Controller', () => {
   it('Should call LoadSurveyByIdUseCase with correct values', async () => {
     const { sut, loadSurveyByIdUseCase } = makeSUT()
     const loadSpy = jest.spyOn(loadSurveyByIdUseCase, 'load')
+    const { surveyId } = makeFakeHttpRequest()
 
     await sut.handle(makeFakeHttpRequest())
-    expect(loadSpy).toHaveBeenCalledWith({
-      surveyId: makeFakeHttpRequest().params.survey_id
-    })
+    expect(loadSpy).toHaveBeenCalledWith({ surveyId })
   })
 
   it('Should return 403 if surveyId not exists', async () => {
@@ -99,10 +96,8 @@ describe('Add Survey Result Controller', () => {
 
     const httpresponse = await sut.handle({
       ...makeFakeHttpRequest(),
-      body: {
-        accountId: 'any_account_id',
-        answer: 'answer_not_exists'
-      }
+      accountId: 'any_account_id',
+      answer: 'answer_not_exists'
     })
 
     expect(httpresponse).toHaveProperty('statusCode', StatusCode.FORBIDDEN)
@@ -136,12 +131,9 @@ describe('Add Survey Result Controller', () => {
   it('Should call SaveSurveyResultUseCase with correct values', async () => {
     const { sut, saveSurveyResultUseCase } = makeSUT()
     const saveSpy = jest.spyOn(saveSurveyResultUseCase, 'save')
+    const request = makeFakeHttpRequest()
 
     await sut.handle(makeFakeHttpRequest())
-    expect(saveSpy).toHaveBeenCalledWith({
-      accountId: makeFakeHttpRequest().body.accountId,
-      answer: makeFakeHttpRequest().body.answer,
-      surveyId: makeFakeHttpRequest().params.survey_id
-    })
+    expect(saveSpy).toHaveBeenCalledWith(request)
   })
 })

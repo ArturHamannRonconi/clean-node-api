@@ -43,14 +43,12 @@ const makeSUT = (): SutTypes => {
 describe('Sign In Controller', () => {
   it('Should be able to return 400 if email doesn\'t sended', async () => {
     const { sut } = makeSUT()
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        email: undefined
-      }
+    const request = {
+      password: 'any_password',
+      email: undefined
     }
 
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse.body).toHaveProperty('error',
       new MissingParamError('email').message
@@ -59,14 +57,12 @@ describe('Sign In Controller', () => {
 
   it('Should be able to return 400 if password doesn\'t sended', async () => {
     const { sut } = makeSUT()
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: undefined
-      }
+    const request = {
+      email: 'any_email',
+      password: undefined
     }
 
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.BAD_REQUEST)
     expect(httpResponse.body).toHaveProperty('error',
       new MissingParamError('password').message
@@ -77,27 +73,23 @@ describe('Sign In Controller', () => {
     const { sut, authenticationUseCaseStub } = makeSUT()
     const authSpy = jest.spyOn(authenticationUseCaseStub, 'auth')
 
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: 'any_password'
-      }
+    const request = {
+      email: 'any_email',
+      password: 'any_password'
     }
-    await sut.handle(httpRequest)
-    expect(authSpy).toHaveBeenCalledWith(httpRequest.body)
+    await sut.handle(request)
+    expect(authSpy).toHaveBeenCalledWith(request)
   })
 
   it('Should return token if authentication return token', async () => {
     const { sut, authenticationUseCaseStub } = makeSUT()
     jest.spyOn(authenticationUseCaseStub, 'auth')
 
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: 'any_password'
-      }
+    const request = {
+      email: 'any_email',
+      password: 'any_password'
     }
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
     expect(httpResponse.body).toHaveProperty('accessToken', 'any_token')
   })
 
@@ -107,14 +99,12 @@ describe('Sign In Controller', () => {
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockImplementation(() => { throw new Error() })
 
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: 'any_password'
-      }
+    const request = {
+      email: 'any_email',
+      password: 'any_password'
     }
 
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
     expect(httpResponse).toHaveProperty('statusCode', StatusCode.INTERNAL_SERVER)
     expect(httpResponse).toHaveProperty('body', new ServerError())
   })
@@ -125,14 +115,12 @@ describe('Sign In Controller', () => {
       .spyOn(authenticationUseCaseStub, 'auth')
       .mockReturnValueOnce(new Promise(resolve => resolve(null)))
 
-    const httpRequest = {
-      body: {
-        email: 'any_email',
-        password: 'any_password'
-      }
+    const request = {
+      email: 'any_email',
+      password: 'any_password'
     }
 
-    const httpResponse = await sut.handle(httpRequest)
+    const httpResponse = await sut.handle(request)
     expect(httpResponse)
       .toHaveProperty('statusCode', StatusCode.UNAUTORIZED)
     expect(httpResponse.body)
